@@ -5,7 +5,9 @@ Inspirace:
 
 O projektu:
 -----------
-- NFT - ruzna zviratka, ruzne atributy (jmeno, pohlavi, hlava, telo, pusa, oci, nos, ocas(?) - udelat dynamicky (?)) - kazdy contract jedno zvire, aby se daly pridavat
+- Contracty:
+  - NFT - ruzna zviratka, ruzne atributy (jmeno, pohlavi, hlava, telo, pusa, oci, nos, ocas(?) - udelat dynamicky (?)) - kazdy contract jedno zvire, aby se daly pridavat na web
+  - Pool - misto, kde se da stakovat productTokeny a jejich productToken-BUSD LP
 - kazde zviratko ma nejaky level, da se upgradovat koupi za BUSD
 - kazde zviratko se muze rozmnozit s jinym vlozenim samce a samice do mnoziciho contractu + pridat BUSD, ktere se prevedou k nam do devWallet... kazdy level bude stat stejne
 - productTokeny - to, co zviratko produkuje (kazdy druh neco jineho - napr. krava produkuje mleko), zavisi na levelu zviratka, automaticky se generuje podle levelu zviratka
