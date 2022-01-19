@@ -3,7 +3,7 @@ pragma solidity 0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Token is ERC721, Ownable {
+contract NFT is ERC721, Ownable {
  // Part 1: https://www.youtube.com/watch?v=_VVqa7zWSxA
  // Part 2: https://www.youtube.com/watch?v=y519kGkAQd8
  // TODO: Add owner address (MasterChef) + require
