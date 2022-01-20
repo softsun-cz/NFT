@@ -1,6 +1,6 @@
 #!/bin/sh
 
-REPO=token-airdrop.git
+REPO=NFT.git
 USER=softsun-cz
 PASS=`cat ./.secret_git`
 
