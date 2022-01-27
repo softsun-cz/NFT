@@ -1,7 +1,6 @@
 TODO:
 - deploy hlasi: "NFT" -- gas required exceeds allowance (20019530)
 
-
 Inspirace:
 ----------
 - https://cryptozombies.io/sk/course

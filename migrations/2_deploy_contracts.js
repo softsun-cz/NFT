@@ -5,11 +5,14 @@ module.exports = async function(deployer) {
  const tokenName = 'Piggy';
  const tokenSymbol = 'PIG';
  const productAddress = '0x0000000000000000000000000000000000000000';
+ var nft = NFT.at('0x0000000000000000000000000000000000000000');
 
- await deployer.deploy(NFT, tokenName, tokenSymbol, productAddress);
- const nft = await NFT.deployed();
+ // NFT:
+ //await deployer.deploy(NFT, tokenName, tokenSymbol, productAddress);
+ //var nft = await NFT.deployed();
 
+ // MARKETPLACE:
  await deployer.deploy(Marketplace);
  const marketplace = await Marketplace.deployed();
- marketplace.addAcceptedNFT(nft.address);
+ //marketplace.addAcceptedNFT(nft.address);
 };
