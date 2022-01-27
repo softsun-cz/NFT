@@ -59,7 +59,7 @@ contract NFT is ERC721, Ownable {
     }
 
     function getRandomNumber(uint _num) private view returns (uint) {
-        return uint(uint(keccak256(abi.encodePacked(block.timestamp, block.difficulty))) % _num);
+        return uint(uint(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender))) % _num);
     }
     
     function utfStrLen(string memory str) pure internal returns (uint) {
