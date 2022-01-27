@@ -7,12 +7,12 @@ module.exports = async function(deployer) {
  const nftSymbol = 'PIG';
  const productTokenName = 'Truffle';
  const productTokenSymbol = 'TRF';
- //const productToken = ProductToken.at('0xfAAe281b721c6cE8D0428a80445Be60669C4f71F');
+ //const productToken = ProductToken.at('0xfDe1F5E955C83B2f076D4ca546b72E5e575F1093');
  //const nft = NFT.at('0x0000000000000000000000000000000000000000');
 
  // PRODUCT TOKEN:
  await deployer.deploy(ProductToken, productTokenName, productTokenSymbol);
- const productToken = await NFT.deployed();
+ const productToken = await ProductToken.deployed();
 
  // NFT:
  await deployer.deploy(NFT, nftName, nftSymbol, productToken.address);
