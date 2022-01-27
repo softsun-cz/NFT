@@ -7,18 +7,19 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract NFT is ERC721, Ownable {
     string public tokenName;
+    string public tokenSymbol;
     uint public tokenCount;
     address public productAddress;
-    mapping (uint => Detail) private _tokenDetails;
+    mapping (uint => Details) private tokenDetails;
 
-    struct Detail {
+    struct Details {
         string name;
         bool sex;
-        uint8 bodyID;
-        uint8 eyesID;
-        uint8 noseID;
-        uint8 mouthID;
-        uint8 earsID;
+        uint bodyID;
+        uint eyesID;
+        uint noseID;
+        uint mouthID;
+        uint earsID;
         uint level;
         uint created;
     }
@@ -27,25 +28,25 @@ contract NFT is ERC721, Ownable {
         tokenName = _tokenName;
         tokenSymbol = _tokenSymbol;
         productAddress = _productAddress;
-        for (uint10 i = 0; i < 1000; i++) mint(_tokenName + string(i));
+        for (uint16 i = 0; i < 1000; i++) mint(string(abi.encodePacked(tokenName, ' ', Strings.toString(i))));
     }
 
     function getTokenDetails(uint tokenID) public view returns (Details memory) {
-        return _tokenDetails[tokenID];
+        return tokenDetails[tokenID];
     }
 
-    function setTokenName(uint tokenID, string _newName) public {
-        require(this.ownerOf(_tokenDetails[tokenID]) == msg.sender, 'setTokenName: You are not the owner of this token');
+    function setTokenName(uint tokenID, string memory _newName) public {
+        require(ownerOf(tokenDetails[tokenID]) == msg.sender, 'setTokenName: You are not the owner of this token');
         require(utfStrLen(_newName) <= 16, 'setTokenName: Name is too long. Maximum: 16 characters');
         require(charMatch(_newName), 'setTokenName: Name can contain only a-z, A-Z, 0-9, space and dot');
-        _tokenDetails[tokenID].name = _newName;
+        tokenDetails[tokenID].name = _newName;
     }
 
     function mint(string memory _name) public onlyOwner {
         _safeMint(msg.sender, tokenCount);
-        _tokenDetails[tokenCount] = Details(
+        tokenDetails[tokenCount] = Details(
             _name,
-            getRandomBool(_sex),
+            getRandomNumber(2) == 1 ? true : false,
             getRandomNumber(3),
             getRandomNumber(5),
             getRandomNumber(5),
@@ -58,14 +59,11 @@ contract NFT is ERC721, Ownable {
     }
 
     function getRandomNumber(uint _num) private view returns (uint) {
-        return uint(uint(keccak256(block.timestamp, block.difficulty))%_num);
+        return uint(uint(keccak256(abi.encodePacked(block.timestamp, block.difficulty))) % _num);
     }
     
-    function getRandomBool() private view returns (bool) {
-        return bool(uint(keccak256(block.timestamp, block.difficulty))%2 == 1 ? true : false);
-    }
-
-    function utfStrLen(string memory str) pure internal returns (uint length) {
+    function utfStrLen(string memory str) pure internal returns (uint) {
+        uint length = 0;
         uint i = 0;
         bytes memory string_rep = bytes(str);
         while (i < string_rep.length) {
@@ -79,7 +77,7 @@ contract NFT is ERC721, Ownable {
         return length;
     }
     
-    function charMatch(string str) public pure returns (bool) { // ASCII table: https://www.asciitable.com/
+    function charMatch(string memory str) public pure returns (bool) { // ASCII table: https://www.asciitable.com/
         bytes memory b = bytes(str);
         for (uint i; i < b.length; i++) {
             bytes1 char = b[i];

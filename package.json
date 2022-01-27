@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
-    "@chainlink/contracts": "^0.3.1",
-    "@openzeppelin/contracts": "^4.4.1",
-    "truffle-plugin-verify": "^0.5.20"
+    "@chainlink/contracts": "*",
+    "@openzeppelin/contracts": "*",
+    "truffle-plugin-verify": "*"
   }
 }
