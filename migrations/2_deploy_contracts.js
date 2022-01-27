@@ -1,5 +1,5 @@
 const NFT = artifacts.require('NFT');
-const Marketplace = artifacts.require('MarketPlace');
+const Marketplace = artifacts.require('Marketplace');
 
 module.exports = async function(deployer) {
  const tokenName = 'Piggy';

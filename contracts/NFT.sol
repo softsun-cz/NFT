@@ -36,7 +36,7 @@ contract NFT is ERC721, Ownable {
     }
 
     function setTokenName(uint tokenID, string memory _newName) public {
-        require(ownerOf(tokenDetails[tokenID]) == msg.sender, 'setTokenName: You are not the owner of this token');
+        require(ownerOf(tokenID) == msg.sender, 'setTokenName: You are not the owner of this token');
         require(utfStrLen(_newName) <= 16, 'setTokenName: Name is too long. Maximum: 16 characters');
         require(charMatch(_newName), 'setTokenName: Name can contain only a-z, A-Z, 0-9, space and dot');
         tokenDetails[tokenID].name = _newName;

@@ -5,6 +5,7 @@
   "dependencies": {
     "@chainlink/contracts": "*",
     "@openzeppelin/contracts": "*",
+    "truffle-contract-size": "*",
     "truffle-plugin-verify": "*"
   }
 }
