@@ -87,7 +87,7 @@ contract NFT is ERC721, Ownable {
                 !(char >= 0x41 && char <= 0x5A) && // A-Z
                 !(char >= 0x30 && char <= 0x39) && // 0-9
                 !(char == 0x20) && // Space
-                !(char == 0x2E) && // Dot
+                !(char == 0x2E) // Dot
             ) return false;
         }
         return true;
