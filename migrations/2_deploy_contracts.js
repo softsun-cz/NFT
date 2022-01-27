@@ -1,18 +1,25 @@
+const ProductToken = artifacts.require('ProductToken');
 const NFT = artifacts.require('NFT');
 const Marketplace = artifacts.require('Marketplace');
 
 module.exports = async function(deployer) {
- const tokenName = 'Piggy';
- const tokenSymbol = 'PIG';
- const productAddress = '0x0000000000000000000000000000000000000000';
- //var nft = NFT.at('0x0000000000000000000000000000000000000000');
+ const nftName = 'Piggy';
+ const nftSymbol = 'PIG';
+ const productTokenName = 'Truffle';
+ const productTokenSymbol = 'TRF';
+ //const productToken = ProductToken.at('');
+ //const nft = NFT.at('0x0000000000000000000000000000000000000000');
+
+ //PRODUCT TOKEN:
+ await deployer.deploy(ProductToken, productTokenName, productTokenSymbol);
+ const productToken = await NFT.deployed();
 
  // NFT:
- //await deployer.deploy(NFT, tokenName, tokenSymbol, productAddress);
- //var nft = await NFT.deployed();
+ await deployer.deploy(NFT, nftName, nftSymbol, productToken.address);
+ const nft = await NFT.deployed();
 
  // MARKETPLACE:
  await deployer.deploy(Marketplace);
  const marketplace = await Marketplace.deployed();
- //marketplace.addAcceptedNFT(nft.address);
+ marketplace.addAcceptedNFT(nft.address);
 };
