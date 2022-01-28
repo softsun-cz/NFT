@@ -1,5 +1,6 @@
-const ProductToken = artifacts.require('ProductToken');
 const NFT = artifacts.require('NFT');
+const ProductToken = artifacts.require('ProductToken');
+const Factory = artifacts.require('Factory');
 const Marketplace = artifacts.require('Marketplace');
 
 module.exports = async function(deployer) {
@@ -7,19 +8,41 @@ module.exports = async function(deployer) {
  const nftSymbol = 'PIG';
  const productTokenName = 'Truffle';
  const productTokenSymbol = 'TRF';
- //const productToken = ProductToken.at('0x8c0Dc3f4221EC5FF766F234920802b2c62eecBed');
- //const nft = NFT.at('0x0000000000000000000000000000000000000000');
+ const marketplaceCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
+ const marketplaceDevFeePercent = '100'; // 1%
 
  // PRODUCT TOKEN:
- //await deployer.deploy(ProductToken, productTokenName, productTokenSymbol);
- //const productToken = await ProductToken.deployed();
-
+ await deployer.deploy(ProductToken, productTokenName, productTokenSymbol);
+ var productToken = await ProductToken.deployed();
+ 
  // NFT:
- await deployer.deploy(NFT, nftName, nftSymbol);
- const nft = await NFT.deployed();
+ await deployer.deploy(NFT, nftName, nftSymbol, productToken.address);
+ var nft = await NFT.deployed();
 
  // MARKETPLACE:
- await deployer.deploy(Marketplace);
+ await deployer.deploy(Marketplace, marketplaceCurrencyAddress, marketplaceDevFeePercent);
  const marketplace = await Marketplace.deployed();
- marketplace.addAcceptedNFT(nft.address);
+
+ // FACTORY:
+ await deployer.deploy(Factory, nft.address, marketplace.address);
+ const factory = await Factory.deployed();
+ 
+ console.log('------------');
+ console.log(factory.owner());
+ console.log('------------');
+
+ // SETTINGS:
+ await productToken.transferOwnership(nft.address);
+ await nft.transferOwnership(factory.address);
+ await marketplace.addAcceptedNFT(nft.address);
+ //await factory.mintMore(factory.owner, 500, nftName);
+
+ // LOG:
+ console.log('');
+ console.log('=============================================================');
+ console.log('| NFT:           ' + nft.address + ' |');
+ console.log('| Product token: ' + productToken.address + ' |');
+ console.log('| Factory:       ' + factory.address + ' |');
+ console.log('| Marketplace:   ' + marketplace.address + ' |');
+ console.log('=============================================================');
 };

@@ -1,6 +1,16 @@
 TODO:
-- deploy hlasi: "NFT" -- gas required exceeds allowance (20019530)
-- predat ownership productToken -> NFT
+- Web - pridat stranku, kde je seznam karticek (NFT), co mam v penezence - zatim bez obrazku - jen cisla nosu, usi apod.
+- Web - pridat vyhledavani podle ID + pridat adresu ownera
+- Web - pridat stranku pro Factory
+- Web - pridat stranku pro Marketplace
+- Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
+- Factory - prvni emise -> Marketplace
+- Factory - mintToMarketplace - i zmenit za opravdove id tokenu
+- Factory - pridat mnozeni
+- ProductToken - nastavit emisi podle levelu NFT
+- deploy skript - nefunguje SETTINGS - factory.mintMore(factory.owner, 500, nftName);
+- NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
+
 
 Inspirace:
 ----------
