@@ -4,12 +4,13 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 contract NFT is ERC721, Ownable {
     string public tokenName;
     string public tokenSymbol;
     uint public tokenCount;
-    address public productAddress;
+    IERC20 public productToken;
     mapping (uint => Details) private tokenDetails;
 
     struct Details {
@@ -24,10 +25,10 @@ contract NFT is ERC721, Ownable {
         uint created;
     }
 
-    constructor(string memory _tokenName, string memory _tokenSymbol, address _productAddress) ERC721(_tokenName, _tokenSymbol) {
+    constructor(string memory _tokenName, string memory _tokenSymbol) ERC721(_tokenName, _tokenSymbol) {
         tokenName = _tokenName;
         tokenSymbol = _tokenSymbol;
-        productAddress = _productAddress;
+        //productToken = IERC20(_productAddress);
         for (uint16 i = 0; i < 1000; i++) mint(string(abi.encodePacked(tokenName, ' ', Strings.toString(i))));
     }
 
