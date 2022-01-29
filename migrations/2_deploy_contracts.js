@@ -10,6 +10,8 @@ module.exports = async function(deployer) {
  const productTokenSymbol = 'TRF';
  const marketplaceCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
  const marketplaceDevFeePercent = '100'; // 1%
+ const factoryInitialCount = 10;
+ const factoryInitialPrice = 10000000000000000000;
 
  // PRODUCT TOKEN:
  await deployer.deploy(ProductToken, productTokenName, productTokenSymbol);
@@ -28,14 +30,14 @@ module.exports = async function(deployer) {
  const factory = await Factory.deployed();
  
  console.log('------------');
- console.log(factory.owner());
+ console.log(await factory.owner());
  console.log('------------');
 
  // SETTINGS:
  await productToken.transferOwnership(nft.address);
  await nft.transferOwnership(factory.address);
- await marketplace.addAcceptedNFT(nft.address);
- await factory.mintToMarketPlace(500, nftName, 10000000000000000000);
+ await marketplace.addAcceptedContract(nft.address);
+ await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
 
  // LOG:
  console.log('');

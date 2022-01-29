@@ -33,7 +33,7 @@ contract NFT is ERC721, Ownable {
         productToken = IERC20(_productAddress);
     }
 
-    function mint(address _recipient, string memory _name) public onlyOwner {
+    function mint(address _recipient, string memory _name) public onlyOwner returns(uint) {
         _safeMint(_recipient, tokenCount);
         tokenDetails[tokenCount] = Details(
             _name,
@@ -48,6 +48,7 @@ contract NFT is ERC721, Ownable {
             block.timestamp
         );
         tokenCount++;
+        return tokenCount--;
     }
 
     function getRandomNumber(uint _num) private returns (uint) {

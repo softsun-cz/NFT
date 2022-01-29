@@ -25,9 +25,8 @@ contract Factory is Ownable {
 
     function mintToMarketplace(uint _count, string memory _name, uint _price) public onlyOwner {
         for (uint i = 0; i < _count; i++) {
-            mint(address(this), string(abi.encodePacked(_name, ' ', Strings.toString(i))));
-            nft.safeTransferFrom(address(this), marketplaceAddress, i);
-            marketplace.deposit(address(nft), i, _price) // TODO: i zmenit za opravdove ID tokenu
+            uint tokenID = mint(address(this), string(abi.encodePacked(_name, ' ', Strings.toString(i))));
+            marketplace.deposit(address(nft), tokenID, _price);
         }
     }
 }
