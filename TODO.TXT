@@ -1,10 +1,12 @@
 TODO:
 -----
 - Web - pridat stranku, kde je seznam karticek (NFT), co mam v penezence - zatim bez obrazku - jen cisla nosu, usi apod.
+- Web - pridat stranku pro Sale + seznam event (co kdo koupil) - pri evente zobrazit aktualni cenu a kolik tokenu se da koupit za tu cenu
 - Web - pridat vyhledavani podle ID + pridat adresu ownera
 - Web - pridat stranku pro Factory
 - Web - pridat stranku pro Marketplace
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
+- Sale - opravit pocitani kolik se koupi za jakou cenu
 - Factory - mintToMarketplace - hazi chybu pri deployi: Error: overflow (fault="overflow", operation="BigNumber.from", value=10000000000000000000, code=NUMERIC_FAULT, version=bignumber/5.0.8)
 - Factory - pridat mnozeni
 - ProductToken - nastavit emisi podle levelu NFT

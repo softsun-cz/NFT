@@ -18,7 +18,7 @@ module.exports = async function(deployer) {
  const marketplaceCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
  const marketplaceDevFeePercent = '100'; // 1%
  const saleCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
- const factoryInitialCount = '10';
+ const factoryInitialCount = '500';
  const factoryInitialPrice = '10000000000000000000';
  const tokenUpgradeInitialPrice = '1000000000000000000'; // 1 XUSD / UPG
  const tokenUpgradeIncreaseEvery = '100000000000000000000'; // 100 UPG
@@ -34,6 +34,7 @@ module.exports = async function(deployer) {
  //var marketplace = await Marketplace.at('');
  //var factory = await Marketplace.at('');
 
+ /*
  // SALE:
  await deployer.deploy(Sale, saleCurrencyAddress);
  var sale = await Sale.deployed();
@@ -45,8 +46,7 @@ module.exports = async function(deployer) {
  // TOKEN FACTORY:
  await deployer.deploy(TokenFactory, tokenFactoryName, tokenFactorySymbol);
  var tokenFactory = await TokenFactory.deployed();
-
-/*
+*/
  // TOKEN PRODUCT:
  await deployer.deploy(TokenProduct, tokenProductName, tokenProductSymbol);
  var tokenProduct = await TokenProduct.deployed();
@@ -66,33 +66,29 @@ module.exports = async function(deployer) {
  // SETTINGS:
  await tokenProduct.transferOwnership(nft.address);
  await nft.transferOwnership(factory.address);
- */
+ await marketplace.addAcceptedContract(nft.address);
+ await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
+ /*
  await sale.addToken(tokenFactory.address, tokenFactoryInitialPrice, tokenFactoryIncreaseEvery, tokenFactoryMultiplier);
  await sale.addToken(tokenUpgrade.address, tokenUpgradeInitialPrice, tokenUpgradeIncreaseEvery, tokenUpgradeMultiplier);
- //await tokenUpgrade.approve(sale.address, maxint);
- //await tokenFactory.approve(sale.address, maxint);
  await tokenUpgrade.transferOwnership(sale.address);
  await tokenFactory.transferOwnership(sale.address);
- //await marketplace.addAcceptedContract(nft.address);
- //await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
-
-
- // TEST - approve XUSD na SALE contract:
+ */
+/*
+ // SALE - TEST
  const maxint = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
  var xusd = await TokenProduct.at('0xF42a4429F107bD120C5E42E069FDad0AC625F615');
  await xusd.approve(sale.address, maxint);
-
-/*
+*/
 // LOG:
  console.log('');
  console.log('=============================================================');
  console.log('| NFT:           ' + nft.address + ' |');
- console.log('| Token Factory: ' + tokenFactory.address + ' |');
+ //console.log('| Token Factory: ' + tokenFactory.address + ' |');
  console.log('| Token Product: ' + tokenProduct.address + ' |');
- console.log('| Token Upgrade: ' + tokenUpgrade.address + ' |');
- console.log('| Sale:          ' + sale.address + ' |');
+ //console.log('| Token Upgrade: ' + tokenUpgrade.address + ' |');
+ //console.log('| Sale:          ' + sale.address + ' |');
  console.log('| Factory:       ' + factory.address + ' |');
  console.log('| Marketplace:   ' + marketplace.address + ' |');
  console.log('=============================================================');
- */
 };
