@@ -44,9 +44,7 @@ contract Sale is Ownable, ReentrancyGuard {
         uint amountOur;
         uint segmentNum = buy / incEvery;
         uint priceActual = price;
-        for (uint i = 1; i < segmentNum; i++) {
-            priceActual += priceActual * multiplier / 10000;
-        }
+        for (uint i = 1; i < segmentNum; i++) priceActual += priceActual * multiplier / 10000;
         uint actualAmount = _amount;
         uint segmentCount = incEvery - (buy % incEvery);
         while (actualAmount > 0) {
