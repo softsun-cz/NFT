@@ -9,12 +9,13 @@ const TokenFactory = artifacts.require('TokenFactory');
 module.exports = async function(deployer) {
  const nftName = 'Piggy';
  const nftSymbol = 'PIG';
+ const nftBreedPrice = '10000000000000000000'; // 10 UPG
+ const tokenFactoryName = 'Love';
+ const tokenFactorySymbol = 'LOVE';
  const tokenProductName = 'Gold';
  const tokenProductSymbol = 'GOLD';
  const tokenUpgradeName = 'Upgrade';
  const tokenUpgradeSymbol = 'UPG';
- const tokenFactoryName = 'Love';
- const tokenFactorySymbol = 'LOVE';
  const marketplaceCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
  const marketplaceDevFeePercent = '100'; // 1%
  const saleCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
@@ -42,17 +43,17 @@ module.exports = async function(deployer) {
  // TOKEN UPGRADE:
  await deployer.deploy(TokenUpgrade, tokenUpgradeName, tokenUpgradeSymbol);
  var tokenUpgrade = await TokenUpgrade.deployed();
- 
+*/ 
  // TOKEN FACTORY:
  await deployer.deploy(TokenFactory, tokenFactoryName, tokenFactorySymbol);
  var tokenFactory = await TokenFactory.deployed();
-*/
+
  // TOKEN PRODUCT:
  await deployer.deploy(TokenProduct, tokenProductName, tokenProductSymbol);
  var tokenProduct = await TokenProduct.deployed();
 
  // NFT:
- await deployer.deploy(NFT, nftName, nftSymbol, productToken.address);
+ await deployer.deploy(NFT, nftName, nftSymbol, tokenProduct.address, tokenFactory.address, nftBreedPrice);
  var nft = await NFT.deployed();
 
  // MARKETPLACE:
@@ -67,7 +68,7 @@ module.exports = async function(deployer) {
  await tokenProduct.transferOwnership(nft.address);
  await nft.transferOwnership(factory.address);
  await marketplace.addAcceptedContract(nft.address);
- await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
+ //await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
  /*
  await sale.addToken(tokenFactory.address, tokenFactoryInitialPrice, tokenFactoryIncreaseEvery, tokenFactoryMultiplier);
  await sale.addToken(tokenUpgrade.address, tokenUpgradeInitialPrice, tokenUpgradeIncreaseEvery, tokenUpgradeMultiplier);

@@ -12,7 +12,9 @@ contract NFT is ERC721, Ownable {
     string public tokenName;
     string public tokenSymbol;
     IERC20 public productToken;
-    mapping (uint => Details) private tokenDetails;
+    IERC20 public breedCurrency;
+    uint breedPrice;
+    mapping (uint => Details) public tokenDetails;
 
     struct Details {
         string name;
@@ -27,10 +29,12 @@ contract NFT is ERC721, Ownable {
         uint created;
     }
 
-    constructor(string memory _tokenName, string memory _tokenSymbol, address _productAddress) ERC721(_tokenName, _tokenSymbol) {
+    constructor(string memory _tokenName, string memory _tokenSymbol, address _productAddress, address _breedCurrencyAddress, uint _breedPrice) ERC721(_tokenName, _tokenSymbol) {
         tokenName = _tokenName;
         tokenSymbol = _tokenSymbol;
+        breedPrice = _breedPrice;
         productToken = IERC20(_productAddress);
+        breedCurrency = IERC20(_breedCurrencyAddress);
     }
 
     function mint(address _recipient, string memory _name) public onlyOwner returns (uint) {

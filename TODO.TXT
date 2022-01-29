@@ -7,8 +7,7 @@ TODO:
 - Web - pridat stranku pro Marketplace
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Sale - opravit pocitani kolik se koupi za jakou cenu
-- Factory - mintToMarketplace - hazi chybu pri deployi: Error: overflow (fault="overflow", operation="BigNumber.from", value=10000000000000000000, code=NUMERIC_FAULT, version=bignumber/5.0.8)
-- Factory - pridat mnozeni
+- Factory - v breed() je docasne XUSD - dat tam Token Upgrade, az bude hotovy Sale
 - ProductToken - nastavit emisi podle levelu NFT
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
 

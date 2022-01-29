@@ -29,4 +29,11 @@ contract Factory is Ownable {
             marketplace.deposit(address(nft), tokenID, _price);
         }
     }
+
+    function breed(uint _nftMaleID, uint _nftFemaleID) public {
+        require(nft.ownerOf(_nftMaleID) == msg.sender, 'breed: First ID is not in your wallet');
+        require(nft.ownerOf(_nftFemaleID) == msg.sender, 'breed: Second ID is not in your wallet');
+        require(nft.tokenDetails[_nftMaleID].sex, 'breed: First ID is not male');
+        require(!nft.tokenDetails[_nftFemaleID].sex, 'breed: Second ID is not female');
+    }
 }
