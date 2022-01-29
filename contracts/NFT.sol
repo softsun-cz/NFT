@@ -7,9 +7,10 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 contract NFT is ERC721, Ownable {
+    uint private rndCounter;
+    uint public tokenCount;
     string public tokenName;
     string public tokenSymbol;
-    uint public tokenCount;
     IERC20 public productToken;
     mapping (uint => Details) private tokenDetails;
 
@@ -49,8 +50,9 @@ contract NFT is ERC721, Ownable {
         tokenCount++;
     }
 
-    function getRandomNumber(uint _num) private view returns (uint) {
-        return uint(uint(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender))) % _num);
+    function getRandomNumber(uint _num) private returns (uint) {
+        rndCounter = rndCounter >= 10 ? 0 : rndCounter++;
+        return uint(uint(keccak256(abi.encodePacked(block.timestamp, rndCounter))) % _num);
     }
 
     function getTokenDetails(uint tokenID) public view returns (Details memory) {

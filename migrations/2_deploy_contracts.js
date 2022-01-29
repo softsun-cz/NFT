@@ -35,7 +35,7 @@ module.exports = async function(deployer) {
  await productToken.transferOwnership(nft.address);
  await nft.transferOwnership(factory.address);
  await marketplace.addAcceptedNFT(nft.address);
- //await factory.mintMore(factory.owner, 500, nftName);
+ await factory.mintToMarketPlace(500, nftName, 10000000000000000000);
 
  // LOG:
  console.log('');
