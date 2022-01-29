@@ -12,8 +12,6 @@ contract NFT is ERC721, Ownable {
     string public tokenName;
     string public tokenSymbol;
     IERC20 public productToken;
-    IERC20 public breedCurrency;
-    uint breedPrice;
     mapping (uint => Details) public tokenDetails;
 
     struct Details {
@@ -29,12 +27,10 @@ contract NFT is ERC721, Ownable {
         uint created;
     }
 
-    constructor(string memory _tokenName, string memory _tokenSymbol, address _productAddress, address _breedCurrencyAddress, uint _breedPrice) ERC721(_tokenName, _tokenSymbol) {
+    constructor(string memory _tokenName, string memory _tokenSymbol, address _productAddress) ERC721(_tokenName, _tokenSymbol) {
         tokenName = _tokenName;
         tokenSymbol = _tokenSymbol;
-        breedPrice = _breedPrice;
         productToken = IERC20(_productAddress);
-        breedCurrency = IERC20(_breedCurrencyAddress);
     }
 
     function mint(address _recipient, string memory _name) public onlyOwner returns (uint) {
@@ -60,15 +56,11 @@ contract NFT is ERC721, Ownable {
         return uint(uint(keccak256(abi.encodePacked(block.timestamp, rndCounter))) % _num);
     }
 
-    function getTokenDetails(uint tokenID) public view returns (Details memory) {
-        return tokenDetails[tokenID];
-    }
-
-    function setTokenName(uint tokenID, string memory _newName) public {
-        require(ownerOf(tokenID) == msg.sender, 'setTokenName: You are not the owner of this token');
+    function setTokenName(uint _tokenID, string memory _newName) public {
+        require(ownerOf(_tokenID) == msg.sender, 'setTokenName: You are not the owner of this token');
         require(getUTFStrLen(_newName) <= 16, 'setTokenName: Name is too long. Maximum: 16 characters');
         require(charMatch(_newName), 'setTokenName: Name can contain only a-z, A-Z, 0-9, space and dot');
-        tokenDetails[tokenID].name = _newName;
+        tokenDetails[_tokenID].name = _newName;
     }
 
     function getUTFStrLen(string memory str) pure internal returns (uint) {

@@ -9,7 +9,6 @@ const TokenFactory = artifacts.require('TokenFactory');
 module.exports = async function(deployer) {
  const nftName = 'Piggy';
  const nftSymbol = 'PIG';
- const nftBreedPrice = '10000000000000000000'; // 10 UPG
  const tokenFactoryName = 'Love';
  const tokenFactorySymbol = 'LOVE';
  const tokenProductName = 'Gold';
@@ -19,6 +18,8 @@ module.exports = async function(deployer) {
  const marketplaceCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
  const marketplaceDevFeePercent = '100'; // 1%
  const saleCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
+ const factoryDevFeePercent = '5';
+ const factoryBreedPrice = '10000000000000000000'; // 10 UPG
  const factoryInitialCount = '500';
  const factoryInitialPrice = '10000000000000000000';
  const tokenUpgradeInitialPrice = '1000000000000000000'; // 1 XUSD / UPG
@@ -27,7 +28,6 @@ module.exports = async function(deployer) {
  const tokenFactoryInitialPrice = '2000000000000000000'; // 2 XUSD / tokenUpgrade
  const tokenFactoryIncreaseEvery = '100000000000000000000'; // 100 UPG
  const tokenFactoryMultiplier = '100'; // 1%
-
  //var tokenProduct = await TokenProduct.at('');
  //var tokenFactory = await TokenFactory.at('');
  //var tokenUpgrade = await TokenUpgrade.at('');
@@ -35,7 +35,6 @@ module.exports = async function(deployer) {
  //var marketplace = await Marketplace.at('');
  //var factory = await Marketplace.at('');
 
- /*
  // SALE:
  await deployer.deploy(Sale, saleCurrencyAddress);
  var sale = await Sale.deployed();
@@ -43,7 +42,7 @@ module.exports = async function(deployer) {
  // TOKEN UPGRADE:
  await deployer.deploy(TokenUpgrade, tokenUpgradeName, tokenUpgradeSymbol);
  var tokenUpgrade = await TokenUpgrade.deployed();
-*/ 
+
  // TOKEN FACTORY:
  await deployer.deploy(TokenFactory, tokenFactoryName, tokenFactorySymbol);
  var tokenFactory = await TokenFactory.deployed();
@@ -53,7 +52,7 @@ module.exports = async function(deployer) {
  var tokenProduct = await TokenProduct.deployed();
 
  // NFT:
- await deployer.deploy(NFT, nftName, nftSymbol, tokenProduct.address, tokenFactory.address, nftBreedPrice);
+ await deployer.deploy(NFT, nftName, nftSymbol, tokenProduct.address);
  var nft = await NFT.deployed();
 
  // MARKETPLACE:
@@ -61,20 +60,18 @@ module.exports = async function(deployer) {
  var marketplace = await Marketplace.deployed();
 
  // FACTORY:
- await deployer.deploy(Factory, nft.address, marketplace.address);
+ await deployer.deploy(Factory, nft.address, marketplace.address, tokenFactory.address, factoryBreedPrice, factoryDevFeePercent);
  var factory = await Factory.deployed();
 
  // SETTINGS:
  await tokenProduct.transferOwnership(nft.address);
  await nft.transferOwnership(factory.address);
  await marketplace.addAcceptedContract(nft.address);
- //await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
- /*
  await sale.addToken(tokenFactory.address, tokenFactoryInitialPrice, tokenFactoryIncreaseEvery, tokenFactoryMultiplier);
  await sale.addToken(tokenUpgrade.address, tokenUpgradeInitialPrice, tokenUpgradeIncreaseEvery, tokenUpgradeMultiplier);
  await tokenUpgrade.transferOwnership(sale.address);
  await tokenFactory.transferOwnership(sale.address);
- */
+ await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
 /*
  // SALE - TEST
  const maxint = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
@@ -85,10 +82,10 @@ module.exports = async function(deployer) {
  console.log('');
  console.log('=============================================================');
  console.log('| NFT:           ' + nft.address + ' |');
- //console.log('| Token Factory: ' + tokenFactory.address + ' |');
+ console.log('| Token Factory: ' + tokenFactory.address + ' |');
  console.log('| Token Product: ' + tokenProduct.address + ' |');
- //console.log('| Token Upgrade: ' + tokenUpgrade.address + ' |');
- //console.log('| Sale:          ' + sale.address + ' |');
+ console.log('| Token Upgrade: ' + tokenUpgrade.address + ' |');
+ console.log('| Sale:          ' + sale.address + ' |');
  console.log('| Factory:       ' + factory.address + ' |');
  console.log('| Marketplace:   ' + marketplace.address + ' |');
  console.log('=============================================================');

@@ -6,9 +6,12 @@ TODO:
 - Web - pridat stranku pro Factory
 - Web - pridat stranku pro Marketplace
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
+- Deploy - hlasi chybu pri (zakomentovano):
+  - await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice)
+  - Error: execution reverted: ERC721: transfer to non ERC721Receiver implementer
 - Sale - opravit pocitani kolik se koupi za jakou cenu
-- Factory - v breed() je docasne XUSD - dat tam Token Upgrade, az bude hotovy Sale
 - ProductToken - nastavit emisi podle levelu NFT
+- NFT - pro nove narozeny tokeny z Factory breed() dat treba tyden, nez se z nich stane plnohodnotnej token
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
 
 Contracty:
