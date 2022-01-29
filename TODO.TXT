@@ -9,7 +9,6 @@ TODO:
 - Factory - pridat mnozeni
 - ProductToken - nastavit emisi podle levelu NFT
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
-- Sale - buy() - zjistit elegantneji
 
 Contracty:
 ----------
