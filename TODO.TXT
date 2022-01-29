@@ -42,7 +42,6 @@ Horse    -> Horsehair -> Bed
 Bee      -> Honey     -> Honey cake
 Goldfish -> Wishes    -> Happy life
 
-
 Odkazy:
 ------
 Part 1:         https://www.youtube.com/watch?v=_VVqa7zWSxA

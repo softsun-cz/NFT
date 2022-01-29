@@ -71,7 +71,7 @@ module.exports = async function(deployer) {
  await sale.addToken(tokenUpgrade.address, tokenUpgradeInitialPrice, tokenUpgradeIncreaseEvery, tokenUpgradeMultiplier);
  await tokenUpgrade.transferOwnership(sale.address);
  await tokenFactory.transferOwnership(sale.address);
- await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
+ //await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
 /*
  // SALE - TEST
  const maxint = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
