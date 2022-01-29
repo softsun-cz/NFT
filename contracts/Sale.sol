@@ -12,10 +12,10 @@ import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 contract Sale is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
     using SafeERC20Mint for IERC20Mint;
-    IERC20 currency;
-    address devAddress;
-    Details[] tokens;
-    uint buyTotal;
+    IERC20 public currency;
+    address public devAddress;
+    Details[] public tokens;
+    uint public buyTotal;
     event eventBuy(address indexed tokenAddress, uint indexed amountCurrency, uint indexed amountOur);
     event eventAddToken(uint indexed id, Details indexed details);
 
