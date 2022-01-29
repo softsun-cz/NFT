@@ -15,8 +15,8 @@ contract Factory is Ownable {
         marketplace = Marketplace(_marketplaceAddress);
     }
 
-    function mint(address _recipient, string memory _name) public onlyOwner {
-        nft.mint(_recipient, _name);
+    function mint(address _recipient, string memory _name) public onlyOwner returns (uint) {
+        return nft.mint(_recipient, _name);
     }
 
     function mintMore(address _recipient, uint _count, string memory _name) public onlyOwner {

@@ -1,61 +1,48 @@
 TODO:
+-----
 - Web - pridat stranku, kde je seznam karticek (NFT), co mam v penezence - zatim bez obrazku - jen cisla nosu, usi apod.
 - Web - pridat vyhledavani podle ID + pridat adresu ownera
 - Web - pridat stranku pro Factory
 - Web - pridat stranku pro Marketplace
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
-- Factory - prvni emise -> Marketplace
-- Factory - mintToMarketplace - i zmenit za opravdove id tokenu
+- Factory - mintToMarketplace - hazi chybu pri deployi: Error: overflow (fault="overflow", operation="BigNumber.from", value=10000000000000000000, code=NUMERIC_FAULT, version=bignumber/5.0.8)
 - Factory - pridat mnozeni
 - ProductToken - nastavit emisi podle levelu NFT
-- deploy skript - nefunguje SETTINGS - factory.mintMore(factory.owner, 500, nftName);
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
+- Sale - buy() - zjistit elegantneji
 
-
-Inspirace:
+Contracty:
 ----------
-- https://cryptozombies.io/sk/course
-- https://github.com/PatrickAlphaC/nft-mix/blob/main/contracts/SimpleCollectible.sol
-
-O projektu:
------------
-- Contracty:
-  - NFT - ruzna zviratka, ruzne atributy (jmeno, pohlavi, hlava, telo, pusa, oci, nos, ocas(?) - udelat dynamicky (?)) - kazdy contract jedno zvire, aby se daly pridavat na web
-  - Pool - misto, kde se da stakovat productTokeny a jejich productToken-BUSD LP
-- kazde zviratko ma nejaky level, da se upgradovat koupi za BUSD
-- kazde zviratko se muze rozmnozit s jinym vlozenim samce a samice do mnoziciho contractu + pridat BUSD, ktere se prevedou k nam do devWallet... kazdy level bude stat stejne
-- productTokeny - to, co zviratko produkuje (kazdy druh neco jineho - napr. krava produkuje mleko), zavisi na levelu zviratka, automaticky se generuje podle levelu zviratka
+- NFT - ruzna zviratka, ruzne atributy (level, jmeno, pohlavi, hlava, telo, pusa, oci, nos, ocas - udelat dynamicky pro kazde zvire jinak) - moznost pridavat ruzne druhy zvirat
+- Pool - misto, kde se stakuji productTokeny (i LP?)
+- Token Upgrade - kazde zviratko ma nejaky level, da se upgradovat vlozenim upgrade tokenu do NFT (funkci), neco se spali a neco jde developerum
+- Token Factory - kazde zviratko se muze rozmnozit s jinym (stejneho druhu opacneho pohlavi - nutno mít obe ve stejne penezence) + pridat do mnoziciho contractu tento token, neco se spali a neco jde developerum, kazdy level stoji stejne, jako predchozi
+- Token Product - to, co zviratko produkuje (vsechny druhy stejny product token), zavisi na levelu zviratka (cislo levelu je nasobkem emise product tokenu)
+- Sale - contract, kde se kupuji Tokeny Upgrade a Factory - inkrementalne se zvysuje cena kazdych X prodanych
+- Marketplace - uzivatele do nej mohou vlozit, stahnout zpet nebo se proda NFT za vlastni cenu v BUSD, za kazdy prodej x% fee developerum
 
 Logika mnozeni:
 ---------------
-- pokud chci vytvorit nove NFT, musim vlozit BUSD a NFT do mnozirny, muzu samozrejme BUSD i NFT si nechat poslat zpet do penezenky (zjistit, jestli to jde i bez vkladani NFT do mnozirny, treba jen check, jestli je to v penezence uzivatele)
-- musim vlastnit samce a samici stejneho druhu (napr. Pig male a Pig female), nejak osetrit, ze kdyz tam vlozim neco jinyho, tak se mi to vse vrati zpet (pokud to nejde bez vlozeni NFT do contractu mnozirny)
-- kolik je potreba BUSD na rozmnozeni je napevno v contractu - nemelo by jit zmenit
-- pokud dojde k rozmnozeni, ziska uzivatel nove NFT stejneho druhu s levelem 0 s nahodnym pohlavim (0 nebo 1)
-- zmenu vzhledu lze uskutecnit transakci - budou tam zakladni free + placene (BUSD) - budeme moct pridavat - nektere budou treba omezene emisi
+- pokud chci vytvorit nove NFT, vlozim Token Factory a musim zadat adresy dvou NFT (samce a samice) do mnozirny
+- kolik je potreba na rozmnozeni je napevno v contractu pro kazde zvire jinak
+- pokud dojde k rozmnozeni, ziska uzivatel nove NFT stejneho druhu s levelem 1 s nahodnym pohlavim
+- zmenu vzhledu lze uskutecnit transakci za pevny BUSD poplatek nebo (Token Upgrade?) ze zakladnich a placene premium budou drazsi (BUSD) - zvedne to level? budeme moct pridavat nektere v omezene emisi?
 
-Trziste:
---------
-- muzu do nej vlozit nebo stahnout zpet svoje NFT a urcit si cenu
+Staking - napady (nakonec nepouzito):
+-------------------------------------
+Pig      -> Truffle   -> Truffle chocolate
+Cow      -> Cow milk  -> Cheese
+Hen      -> Egg       -> Pie
+Sheep    -> Wool      -> Clothes
+Goat     -> Goat milk -> Goat cheese
+Horse    -> Horsehair -> Bed
+Bee      -> Honey     -> Honey cake
+Goldfish -> Wishes    -> Happy life
 
-Domyslet:
----------
-- nebylo by lepsi udelat vlastni token na mnozeni a upgrady?
-  - nevyhoda - musim poskytnout dostatecnou likviditu
-  - vyhoda - muze jit hodne nahoru kvuli poptavce a tim padem i zviratka muzou rust na cene
-  - asi se ale nesmej palit, protoze by se jejich cena vysplhala nahoru - a nebo naopak palit prave z toho duvodu?
-  - moznost na ne udelat presale?
 
-Staking - napady:
------------------
-// Pig      -> Truffle   -> Truffle chocolate
-// Cow      -> Cow milk  -> Cheese
-// Hen      -> Egg       -> Pie
-// Sheep    -> Wool      -> Clothes
-// Goat     -> Goat milk -> Goat cheese
-// Horse    -> Horsehair -> Bed
-// Bee      -> Honey     -> Honey cake
-// Goldfish -> Wishes    -> Happy life
-
-// Part 1: https://www.youtube.com/watch?v=_VVqa7zWSxA
-// Part 2: https://www.youtube.com/watch?v=y519kGkAQd8
+Odkazy:
+------
+Part 1:         https://www.youtube.com/watch?v=_VVqa7zWSxA
+Part 2:         https://www.youtube.com/watch?v=y519kGkAQd8
+Zombies:        https://cryptozombies.io/sk/course
+Jednoduche NFT: https://github.com/PatrickAlphaC/nft-mix/blob/main/contracts/SimpleCollectible.sol
