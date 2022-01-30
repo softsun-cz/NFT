@@ -48,7 +48,7 @@ contract NFT is ERC721, Ownable {
             block.timestamp
         );
         tokenCount++;
-        return tokenCount--;
+        return tokenCount - 1;
     }
 
     function getRandomNumber(uint _num) private returns (uint) {

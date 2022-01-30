@@ -6,9 +6,8 @@ TODO:
 - Web - pridat stranku pro Factory
 - Web - pridat stranku pro Marketplace
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
-- Deploy - hlasi chybu pri (zakomentovano):
-  - await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice)
-  - Error: execution reverted: ERC721: transfer to non ERC721Receiver implementer
+- Factory - mintMore hlasi chybu: Fail with error 'ERC721: token already minted'
+- Factory - mintToMarketplace hlasi chybu: Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - Sale - opravit pocitani kolik se koupi za jakou cenu
 - ProductToken - nastavit emisi podle levelu NFT
 - NFT - pro nove narozeny tokeny z Factory breed() dat treba tyden, nez se z nich stane plnohodnotnej token
