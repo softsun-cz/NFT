@@ -51,6 +51,10 @@ contract NFT is ERC721, Ownable {
         return tokenCount - 1;
     }
 
+    function mintMore(address _recipient, string memory _name, uint _count) public {
+        for (uint i = 0; i < _count; i++) mint(_recipient, string(abi.encodePacked(_name, ' ', Strings.toString(i))));
+    }
+
     function getRandomNumber(uint _num) private returns (uint) {
         rndCounter = rndCounter >= 10 ? 0 : rndCounter++;
         return uint(uint(keccak256(abi.encodePacked(block.timestamp, rndCounter))) % _num);

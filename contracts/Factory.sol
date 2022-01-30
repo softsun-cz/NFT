@@ -31,8 +31,8 @@ contract Factory is Ownable {
         return nft.mint(_recipient, _name);
     }
 
-    function mintMore(address _recipient, uint _count, string memory _name) public onlyOwner {
-        for (uint i = 0; i < _count; i++) mint(_recipient, string(abi.encodePacked(_name, ' ', Strings.toString(i))));
+    function mintMore(address _recipient, string memory _name, uint _count) public onlyOwner {
+        nft.mintMore(_recipient, _name, _count);
     }
 
     function mintToMarketplace(uint _count, string memory _name, uint _price) public onlyOwner {
