@@ -6,8 +6,7 @@ TODO:
 - Web - pridat stranku pro Factory
 - Web - pridat stranku pro Marketplace
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
-- Sale - buyToken - amountOur je OK, ale neodesle se
-- Sale - buyToken - decimals je tam natvrdo - nacitat z contractu (IERC20 to asi neumi, pridat do nej?)
+- Vytvorit multiDev contract - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - Factory - mintMore hlasi chybu, kdyz jich tam dam treba 50, u 40 to projde
 - Factory - mintToMarketplace - otestovat, co to hodi za chybu

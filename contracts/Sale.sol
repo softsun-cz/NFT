@@ -26,17 +26,17 @@ contract Sale is Ownable, ReentrancyGuard {
 
     struct Details {
         address tokenAddress;
-        uint initialPrice; // 1000000000000000000 // 1 XUSD / UPG
-        uint increaseEvery; // 100000000000000000000 // 100 UPG
-        uint multiplier; // 1000
-        uint buyAmount; // 0
-        uint buyCount; // 0
+        uint initialPrice;
+        uint increaseEvery;
+        uint multiplier;
+        uint buyAmount;
+        uint buyCount;
     }
 
     function buyToken(uint _id, uint _amount) public nonReentrant {
         require(_id <= tokens.length, 'buy: Token not found');
         require(currency.allowance(msg.sender, address(this)) >= _amount, 'buy: Currency allowance is too low');
-        uint decimals = 18; // TODO: read from token (add decimals to IERC20?)
+        IERC20Mint token = IERC20Mint(tokens[_id].tokenAddress);
         uint amountOur = 0;
         uint segmentNum =  tokens[_id].buyAmount / tokens[_id].increaseEvery;
         uint priceActual = tokens[_id].initialPrice;
@@ -45,9 +45,9 @@ contract Sale is Ownable, ReentrancyGuard {
         uint amountActual = _amount;
         uint segmentCount = tokens[_id].increaseEvery - (tokens[_id].buyAmount % tokens[_id].increaseEvery);
         while (amountActual > 0) {
-            uint segmentCost = (segmentCount * priceActual) / 10**decimals;
+            uint segmentCost = (segmentCount * priceActual) / 10**token.decimals();
             if (amountActual < segmentCost) {
-                amountOur += amountActual * 10**decimals / priceActual;
+                amountOur += amountActual * 10**token.decimals() / priceActual;
                 amountActual = 0;
             } else {
                 amountOur += segmentCount;
@@ -58,8 +58,6 @@ contract Sale is Ownable, ReentrancyGuard {
         }
         currency.safeTransferFrom(msg.sender, address(this), _amount);
         currency.safeTransfer(devAddress, _amount);
-        IERC20Mint token = IERC20Mint(tokens[_id].tokenAddress);
-        // TODO: amountOur is OK, but not sending
         token.mint(amountOur);
         token.safeTransfer(msg.sender, amountOur);
         tokens[_id].buyAmount += amountOur;
