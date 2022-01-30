@@ -34,6 +34,8 @@ contract NFT is ERC721, Ownable {
     }
 
     function mint(address _recipient, string memory _name) public onlyOwner returns (uint) {
+        require(getUTFStrLen(_name) <= 16, 'setTokenName: Name is too long. Maximum: 16 characters');
+        require(charMatch(_name), 'setTokenName: Name can contain only a-z, A-Z, 0-9, space and dot');
         _safeMint(_recipient, tokenCount);
         tokenDetails[tokenCount] = Details(
             _name,

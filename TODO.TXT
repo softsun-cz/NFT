@@ -1,20 +1,22 @@
 TODO:
 -----
-- Web - pridat stranku, kde je seznam karticek (NFT), co mam v penezence - zatim bez obrazku - jen cisla nosu, usi apod.
-- Web - pridat stranku pro Sale + seznam event (co kdo koupil) - pri evente zobrazit aktualni cenu a kolik tokenu se da koupit za tu cenu
-- Web - pridat vyhledavani podle ID + pridat adresu ownera
-- Web - pridat stranku pro Factory
+- Web - pridat stranku, kde je seznam karticek (NFT), co mam v penezence + moznost odeslat na jinou penezenku - zatim bez obrazku - jen cisla nosu, usi apod.
 - Web - pridat stranku pro Marketplace
+- Web - pridat stranku Token sale + seznam event (co kdo koupil) - pri evente zobrazit aktualni cenu a kolik tokenu se da koupit za tu cenu
+- Web - pridat vyhledavani podle ID + pridat adresu ownera
+- Web - pridat stranku Breeding (Factory)
+- Web - pridat stranku Staking
+- Web - pridat stranku Statistics - zde budou statistiky ke vsem contractum - info o NFT, Token Factory, Token Product, Token Upgrade, Sale, Marketplace, Factory
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
-- Vytvorit multiDev contract - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
-- Factory - mintMore hlasi chybu, kdyz jich tam dam treba 50, u 40 to projde
+- Factory - mintMore hlasi chybu, kdyz jich vic, jak 50
 - Factory - mintToMarketplace - otestovat, co to hodi za chybu
 - Factory - az na NFT bude vice kolekci, tak u mnozeni kontrolovat, ze jsou ze stejne kolekce
 - ProductToken - nastavit emisi podle levelu NFT
 - NFT - pridat moznost vice kolekci
 - NFT - pro nove narozeny tokeny z Factory breed() dat treba tyden, nez se z nich stane plnohodnotnej token
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
+- Vytvorit multiDev contract (vlastni projekt) - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri
 
 Contracty:
 ----------

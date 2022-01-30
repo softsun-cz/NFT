@@ -42,11 +42,11 @@ module.exports = async function(deployer) {
  // TOKEN UPGRADE:
  await deployer.deploy(TokenUpgrade, tokenUpgradeName, tokenUpgradeSymbol);
  var tokenUpgrade = await TokenUpgrade.deployed();
-
+*/
  // TOKEN FACTORY:
  await deployer.deploy(TokenFactory, tokenFactoryName, tokenFactorySymbol);
  var tokenFactory = await TokenFactory.deployed();
-*/
+
  // TOKEN PRODUCT:
  await deployer.deploy(TokenProduct, tokenProductName, tokenProductSymbol);
  var tokenProduct = await TokenProduct.deployed();
