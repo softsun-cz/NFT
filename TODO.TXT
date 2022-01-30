@@ -10,7 +10,7 @@ TODO:
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - Factory - mintMore hlasi chybu, kdyz jich vic, jak 50
-- Factory - mintToMarketplace - otestovat, co to hodi za chybu
+- Factory - mintToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - Factory - az na NFT bude vice kolekci, tak u mnozeni kontrolovat, ze jsou ze stejne kolekce
 - ProductToken - nastavit emisi podle levelu NFT
 - NFT - pridat moznost vice kolekci
