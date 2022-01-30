@@ -22,12 +22,12 @@ module.exports = async function(deployer) {
  const factoryBreedPrice = '10000000000000000000'; // 10 UPG
  const factoryInitialCount = '500';
  const factoryInitialPrice = '10000000000000000000';
- const tokenUpgradeInitialPrice = '1000000000000000000'; // 1 XUSD / UPG
- const tokenUpgradeIncreaseEvery = '100000000000000000000'; // 100 UPG
- const tokenUpgradeMultiplier = '1000'; // 10%
- const tokenFactoryInitialPrice = '2000000000000000000'; // 2 XUSD / tokenUpgrade
- const tokenFactoryIncreaseEvery = '100000000000000000000'; // 100 UPG
- const tokenFactoryMultiplier = '100'; // 1%
+ const saleTokenUpgradeInitialPrice = '1000000000000000000'; // 1 XUSD / UPG
+ const saleTokenUpgradeIncreaseEvery = '100000000000000000000'; // 100 UPG
+ const saleTokenUpgradeMultiplier = '1000'; // 10%
+ const saleTokenFactoryInitialPrice = '2000000000000000000'; // 2 XUSD / tokenUpgrade
+ const saleTokenFactoryIncreaseEvery = '100000000000000000000'; // 100 UPG
+ const saleTokenFactoryMultiplier = '100'; // 1%
  //var tokenProduct = await TokenProduct.at('');
  //var tokenFactory = await TokenFactory.at('');
  //var tokenUpgrade = await TokenUpgrade.at('');
@@ -46,7 +46,7 @@ module.exports = async function(deployer) {
  // TOKEN FACTORY:
  await deployer.deploy(TokenFactory, tokenFactoryName, tokenFactorySymbol);
  var tokenFactory = await TokenFactory.deployed();
-
+/*
  // TOKEN PRODUCT:
  await deployer.deploy(TokenProduct, tokenProductName, tokenProductSymbol);
  var tokenProduct = await TokenProduct.deployed();
@@ -67,8 +67,9 @@ module.exports = async function(deployer) {
  await tokenProduct.transferOwnership(nft.address);
  await nft.transferOwnership(factory.address);
  await marketplace.addAcceptedContract(nft.address);
- await sale.addToken(tokenFactory.address, tokenFactoryInitialPrice, tokenFactoryIncreaseEvery, tokenFactoryMultiplier);
- await sale.addToken(tokenUpgrade.address, tokenUpgradeInitialPrice, tokenUpgradeIncreaseEvery, tokenUpgradeMultiplier);
+*/
+ await sale.addToken(tokenFactory.address, saleTokenFactoryInitialPrice, saleTokenFactoryIncreaseEvery, saleTokenFactoryMultiplier);
+ await sale.addToken(tokenUpgrade.address, saleTokenUpgradeInitialPrice, saleTokenUpgradeIncreaseEvery, saleTokenUpgradeMultiplier);
  await tokenUpgrade.transferOwnership(sale.address);
  await tokenFactory.transferOwnership(sale.address);
  //await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
@@ -81,12 +82,12 @@ module.exports = async function(deployer) {
 // LOG:
  console.log('');
  console.log('=============================================================');
- console.log('| NFT:           ' + nft.address + ' |');
+ //console.log('| NFT:           ' + nft.address + ' |');
  console.log('| Token Factory: ' + tokenFactory.address + ' |');
- console.log('| Token Product: ' + tokenProduct.address + ' |');
+ //console.log('| Token Product: ' + tokenProduct.address + ' |');
  console.log('| Token Upgrade: ' + tokenUpgrade.address + ' |');
  console.log('| Sale:          ' + sale.address + ' |');
- console.log('| Factory:       ' + factory.address + ' |');
- console.log('| Marketplace:   ' + marketplace.address + ' |');
+ //console.log('| Factory:       ' + factory.address + ' |');
+ //console.log('| Marketplace:   ' + marketplace.address + ' |');
  console.log('=============================================================');
 };

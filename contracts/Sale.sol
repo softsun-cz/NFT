@@ -37,6 +37,8 @@ contract Sale is Ownable, ReentrancyGuard {
         require(_id <= tokens.length, 'buy: Token not found');
         require(currency.allowance(msg.sender, address(this)) >= _amount, 'buy: Currency allowance is too low');
 
+        uint decimals = 18;
+
         uint buy = tokens[_id].buyAmount;
         uint price = tokens[_id].initialPrice;
         uint incEvery = tokens[_id].increaseEvery;

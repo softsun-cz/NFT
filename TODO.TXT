@@ -7,7 +7,7 @@ TODO:
 - Web - pridat stranku pro Marketplace
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Factory - mintMore hlasi chybu, kdyz jich tam dam treba 50, u 40 to projde
-- Factory - mintToMarketplace hlasi chybu: Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
+- Factory - mintToMarketplace - otestovat, co to hodi za chybu
 - Sale - opravit pocitani kolik se koupi za jakou cenu
 - ProductToken - nastavit emisi podle levelu NFT
 - NFT - pro nove narozeny tokeny z Factory breed() dat treba tyden, nez se z nich stane plnohodnotnej token
