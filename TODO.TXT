@@ -6,9 +6,11 @@ TODO:
 - Web - pridat stranku pro Factory
 - Web - pridat stranku pro Marketplace
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
+- Sale - buyToken - amountOur je OK, ale neodesle se
+- Sale - buyToken - decimals je tam natvrdo - nacitat z contractu (IERC20 to asi neumi, pridat do nej?)
 - Factory - mintMore hlasi chybu, kdyz jich tam dam treba 50, u 40 to projde
 - Factory - mintToMarketplace - otestovat, co to hodi za chybu
-- Sale - opravit pocitani kolik se koupi za jakou cenu
+
 - ProductToken - nastavit emisi podle levelu NFT
 - NFT - pro nove narozeny tokeny z Factory breed() dat treba tyden, nez se z nich stane plnohodnotnej token
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach

@@ -26,51 +26,46 @@ contract Sale is Ownable, ReentrancyGuard {
 
     struct Details {
         address tokenAddress;
-        uint initialPrice;
-        uint increaseEvery;
-        uint multiplier;
-        uint buyAmount;
-        uint buyCount;
+        uint initialPrice; // 1000000000000000000 // 1 XUSD / UPG
+        uint increaseEvery; // 100000000000000000000 // 100 UPG
+        uint multiplier; // 1000
+        uint buyAmount; // 0
+        uint buyCount; // 0
     }
 
     function buyToken(uint _id, uint _amount) public nonReentrant {
         require(_id <= tokens.length, 'buy: Token not found');
         require(currency.allowance(msg.sender, address(this)) >= _amount, 'buy: Currency allowance is too low');
-
-        uint decimals = 18;
-
-        uint buy = tokens[_id].buyAmount;
-        uint price = tokens[_id].initialPrice;
-        uint incEvery = tokens[_id].increaseEvery;
-        uint multiplier = tokens[_id].multiplier;
-        uint amountOur;
-        uint segmentNum = buy / incEvery;
-        uint priceActual = price;
-        for (uint i = 1; i < segmentNum; i++) priceActual += priceActual * multiplier / 10000;
+        uint decimals = 18; // TODO: read from token (add decimals to IERC20?)
+        uint amountOur = 0;
+        uint segmentNum =  tokens[_id].buyAmount / tokens[_id].increaseEvery;
+        uint priceActual = tokens[_id].initialPrice;
+        uint priceIncrease = priceActual * tokens[_id].multiplier / 10000;
+        priceActual += segmentNum * priceIncrease;
         uint actualAmount = _amount;
-        uint segmentCount = incEvery - (buy % incEvery);
+        uint segmentCount = tokens[_id].increaseEvery - (tokens[_id].buyAmount % tokens[_id].increaseEvery);
         while (actualAmount > 0) {
-            uint segmentCost = segmentCount * priceActual;
+            uint segmentCost = (segmentCount * priceActual) / 10**decimals;
             if (actualAmount < segmentCost) {
-                amountOur += actualAmount / priceActual;
+                amountOur += actualAmount * 10**decimals / priceActual;
                 actualAmount = 0;
             } else {
                 amountOur += segmentCount;
                 actualAmount -= segmentCost;
-                segmentCount = incEvery;
-                priceActual = priceActual + priceActual * multiplier / 10000;
+                segmentCount = tokens[_id].increaseEvery;
+                priceActual += priceIncrease;
             }
         }
-
         currency.safeTransferFrom(msg.sender, address(this), _amount);
         currency.safeTransfer(devAddress, _amount);
         IERC20Mint token = IERC20Mint(tokens[_id].tokenAddress);
+        // TODO: amountOur is OK, but not sending
         token.mint(amountOur);
         token.safeTransfer(msg.sender, amountOur);
         tokens[_id].buyAmount += amountOur;
         tokens[_id].buyCount++;
         buyTotal++;
-        emit eventBuy(tokens[_id].tokenAddress, _amount, amountOur);
+        emit eventBuy(address(token), _amount, amountOur);
     }
 
     function addToken(address _tokenAddress, uint _initialPrice, uint _increaseEvery, uint _multiplier) public onlyOwner {

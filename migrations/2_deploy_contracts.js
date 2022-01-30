@@ -42,11 +42,11 @@ module.exports = async function(deployer) {
  // TOKEN UPGRADE:
  await deployer.deploy(TokenUpgrade, tokenUpgradeName, tokenUpgradeSymbol);
  var tokenUpgrade = await TokenUpgrade.deployed();
-
+/*
  // TOKEN FACTORY:
  await deployer.deploy(TokenFactory, tokenFactoryName, tokenFactorySymbol);
  var tokenFactory = await TokenFactory.deployed();
-/*
+
  // TOKEN PRODUCT:
  await deployer.deploy(TokenProduct, tokenProductName, tokenProductSymbol);
  var tokenProduct = await TokenProduct.deployed();
@@ -68,22 +68,22 @@ module.exports = async function(deployer) {
  await nft.transferOwnership(factory.address);
  await marketplace.addAcceptedContract(nft.address);
 */
- await sale.addToken(tokenFactory.address, saleTokenFactoryInitialPrice, saleTokenFactoryIncreaseEvery, saleTokenFactoryMultiplier);
+ //await sale.addToken(tokenFactory.address, saleTokenFactoryInitialPrice, saleTokenFactoryIncreaseEvery, saleTokenFactoryMultiplier);
  await sale.addToken(tokenUpgrade.address, saleTokenUpgradeInitialPrice, saleTokenUpgradeIncreaseEvery, saleTokenUpgradeMultiplier);
  await tokenUpgrade.transferOwnership(sale.address);
- await tokenFactory.transferOwnership(sale.address);
+ //await tokenFactory.transferOwnership(sale.address);
  //await factory.mintToMarketplace(factoryInitialCount, nftName, factoryInitialPrice);
-/*
+
  // SALE - TEST
  const maxint = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
  var xusd = await TokenProduct.at('0xF42a4429F107bD120C5E42E069FDad0AC625F615');
  await xusd.approve(sale.address, maxint);
-*/
+
 // LOG:
  console.log('');
  console.log('=============================================================');
  //console.log('| NFT:           ' + nft.address + ' |');
- console.log('| Token Factory: ' + tokenFactory.address + ' |');
+ //console.log('| Token Factory: ' + tokenFactory.address + ' |');
  //console.log('| Token Product: ' + tokenProduct.address + ' |');
  console.log('| Token Upgrade: ' + tokenUpgrade.address + ' |');
  console.log('| Sale:          ' + sale.address + ' |');
