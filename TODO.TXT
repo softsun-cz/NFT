@@ -27,7 +27,7 @@ Contracty:
 
 Logika mnozeni:
 ---------------
-- pokud chci vytvorit nove NFT, vlozim Token Factory a musim zadat adresy dvou NFT (samce a samice) do mnozirny
+- pokud chci vytvorit nove NFT, vlozim Token Factory a zadam adresy dvou NFT (samce a samice) do mnozirny
 - kolik je potreba na rozmnozeni je napevno v contractu pro kazde zvire jinak
 - pokud dojde k rozmnozeni, ziska uzivatel nove NFT stejneho druhu s levelem 1 s nahodnym pohlavim
 - zmenu vzhledu lze uskutecnit transakci za pevny BUSD poplatek nebo (Token Upgrade?) ze zakladnich a placene premium budou drazsi (BUSD) - zvedne to level? budeme moct pridavat nektere v omezene emisi?
