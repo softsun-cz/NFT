@@ -11,7 +11,9 @@ TODO:
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - Factory - mintMore hlasi chybu, kdyz jich tam dam treba 50, u 40 to projde
 - Factory - mintToMarketplace - otestovat, co to hodi za chybu
+- Factory - az na NFT bude vice kolekci, tak u mnozeni kontrolovat, ze jsou ze stejne kolekce
 - ProductToken - nastavit emisi podle levelu NFT
+- NFT - pridat moznost vice kolekci
 - NFT - pro nove narozeny tokeny z Factory breed() dat treba tyden, nez se z nich stane plnohodnotnej token
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
 
