@@ -42,16 +42,16 @@ contract Sale is Ownable, ReentrancyGuard {
         uint priceActual = tokens[_id].initialPrice;
         uint priceIncrease = priceActual * tokens[_id].multiplier / 10000;
         priceActual += segmentNum * priceIncrease;
-        uint actualAmount = _amount;
+        uint amountActual = _amount;
         uint segmentCount = tokens[_id].increaseEvery - (tokens[_id].buyAmount % tokens[_id].increaseEvery);
-        while (actualAmount > 0) {
+        while (amountActual > 0) {
             uint segmentCost = (segmentCount * priceActual) / 10**decimals;
-            if (actualAmount < segmentCost) {
-                amountOur += actualAmount * 10**decimals / priceActual;
-                actualAmount = 0;
+            if (amountActual < segmentCost) {
+                amountOur += amountActual * 10**decimals / priceActual;
+                amountActual = 0;
             } else {
                 amountOur += segmentCount;
-                actualAmount -= segmentCost;
+                amountActual -= segmentCost;
                 segmentCount = tokens[_id].increaseEvery;
                 priceActual += priceIncrease;
             }
