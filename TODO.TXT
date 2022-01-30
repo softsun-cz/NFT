@@ -6,7 +6,7 @@ TODO:
 - Web - pridat stranku pro Factory
 - Web - pridat stranku pro Marketplace
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
-- Factory - mintMore hlasi chybu: Fail with error 'ERC721: token already minted'
+- Factory - mintMore hlasi chybu, kdyz jich tam dam treba 50, u 40 to projde
 - Factory - mintToMarketplace hlasi chybu: Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - Sale - opravit pocitani kolik se koupi za jakou cenu
 - ProductToken - nastavit emisi podle levelu NFT
