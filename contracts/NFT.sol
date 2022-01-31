@@ -3,16 +3,25 @@
 pragma solidity ^0.8.0;
 
 import './libs/ERC721MintMore.sol';
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import './libs/IERC20Mint.sol';
+import './Marketplace.sol';
+import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 contract NFT is ERC721MintMore, Ownable {
-    IERC20 public tokenProduct;
-    IERC20 public tokenUpgrade;
+    using SafeERC20 for IERC20;
+    IERC20Mint public tokenProduct;
+    IERC20Mint public tokenUpgrade;
+    IERC20Mint public tokenFactory; //TODO: breedcurrency - vsude prehodit
+    Marketplace public marketplace;
+    uint public breedPrice;
     uint private rndCounter;
     uint public nftCount;
     string public nftName;
     string public nftSymbol;
+    address public burnAddress;
+    address public devFeeAddress;
+    uint8 public devFeePercent;
     Collections[] collections;
     Properties[] properties;
     mapping (uint => NFTDetails) public nfts;
@@ -30,7 +39,7 @@ contract NFT is ERC721MintMore, Ownable {
     struct Collections {
         string name;
         uint tokenProductEmission;
-        uint tokenUpgradePrice; // TODO: napsat fci, ktera to meni, pokud jeste neni NFT, pridat do add
+        uint tokenUpgradePrice;
         uint nftCount;
         uint createdTime;
     }
@@ -48,40 +57,51 @@ contract NFT is ERC721MintMore, Ownable {
         string name;
         uint collectionID;
         uint level;
-        uint lastEmissionBlock; // TODO: harvestnout pri zmene levelu
+        uint lastEmissionBlock; // TODO: harvestnout pri zmene majitele
         uint createdTime;
     }
     
-    // TODO: pridat kod pro upgrade tokenu
-
-    constructor(string memory _nftName, string memory _nftSymbol, address _tokenProductAddress, address _tokenUpgradeAddress) ERC721MintMore(_nftName, _nftSymbol) {
+    constructor(string memory _nftName, string memory _nftSymbol, uint8 _devFeePercent, address _devFeeAddress, address _burnAddress, address _marketplaceAddress, address _tokenFactoryAddress, address _tokenProductAddress, address _tokenUpgradeAddress) ERC721MintMore(_nftName, _nftSymbol) {
         nftName = _nftName;
         nftSymbol = _nftSymbol;
-        tokenProduct = IERC20(_tokenProductAddress);
-        tokenUpgrade = IERC20(_tokenUpgradeAddress);
+        devFeePercent = _devFeePercent;
+        devFeeAddress = _devFeeAddress;
+        burnAddress = _burnAddress;
+        marketplace = Marketplace(_marketplaceAddress);
+        tokenFactory = IERC20Mint(_tokenFactoryAddress);
+        tokenProduct = IERC20Mint(_tokenProductAddress);
+        tokenUpgrade = IERC20Mint(_tokenUpgradeAddress);
+    }
+
+    function transfer(address _toAddress, uint _nftID) public {
+        require(ownerOf(_nftID) == msg.sender, 'safeTransfer: You are not the owner of this NFT');
+        safeTransfer
     }
 
     function nftRename(uint _nftID, string memory _name) public {
-        require(ownerOf(_nftID) == msg.sender, 'setNFTName: You are not the owner of this NFT');
-        require(getUTFStrLen(_name) <= 16, 'setNFTName: Name is too long. Maximum: 16 characters');
-        require(getCharMatch(_name), 'setNFTName: Name can contain only a-z, A-Z, 0-9, space and dot');
+        require(ownerOf(_nftID) == msg.sender, 'nftRename: You are not the owner of this NFT');
+        require(getUTFStrLen(_name) <= 16, 'nftRename: Name is too long. Maximum: 16 characters');
+        require(getCharMatch(_name), 'nftRename: Name can contain only a-z, A-Z, 0-9, space and dot');
         string memory nameOld = nfts[_nftID].name;
         nfts[_nftID].name = _name;
         emit eventNFTRename(_nftID, nameOld, _name);
     }
 
     function levelUp(uint _nftID, uint _levels) public {
-        require(ownerOf(_nftID) == msg.sender, 'levelUp: You are not the owner of this NFT');
-        uint amount = _levels * collections[nfts[_nftID].collectionID].tokeUpgradePrice;
-        require(tokenUpgrade.allowance >= amount, 'levelUp: ');
         // TODO: otestovat, jestli to hodi chybu, kdyz nemam dostatek tokenu, pokud to projde s nizsi castkou, tak tam pridat require
-        tokenUpgrade.safeTransferFrom();
+        require(ownerOf(_nftID) == msg.sender, 'levelUp: You are not the owner of this NFT');
+        uint amount = _levels * collections[nfts[_nftID].collectionID].tokenUpgradePrice;
+        require(tokenUpgrade.allowance(msg.sender, address(this)) >= amount, 'levelUp: Token Upgrade allowance is too low');
+        harvestTokenProduct(_nftID);
+        tokenUpgrade.safeTransferFrom(msg.sender, address(this), amount);
+        tokenUpgrade.safeTransfer(devFeeAddress, amount * devFeePercent / 10000);
+        tokenUpgrade.safeTransfer(burnAddress, amount * (10000 - devFeePercent) / 10000);
         nfts[_nftID].level += _levels;
     }
 
     function harvestTokenProduct(uint _nftID) public {
         require(ownerOf(_nftID) == msg.sender, 'harvestTokenProduct: You are not the owner of this NFT');
-        // TODO: pokud je owner dev (uplne novy NFT, pak neemitovat Token Upgrade)
+        // TODO: pokud je owner dev (nebo factory nebo cokoliv bude na zacatku, kdyz je uplne nove NFT, pak neemitovat Token Upgrade)
         uint toHarvest = getTokenProductToHarvest(_nftID);
         require(toHarvest != 0, 'harvestTokenProduct: No tokens to harvest');
         tokenProduct.mint(toHarvest);
@@ -89,9 +109,7 @@ contract NFT is ERC721MintMore, Ownable {
         nfts[_nftID].lastEmissionBlock = block.number;
     }
 
-    
-
-    function getTokenProductToHarvest(uint _nftID) public {
+    function getTokenProductToHarvest(uint _nftID) public view returns(uint) {
         return (block.number - nfts[_nftID].lastEmissionBlock) * nfts[_nftID].level * collections[nfts[_nftID].collectionID].tokenProductEmission / tokenUpgrade.decimals();
     }
 
@@ -113,11 +131,28 @@ contract NFT is ERC721MintMore, Ownable {
         return nftCount - 1;
     }
 
+    function mintMoreToMarketplace(uint _collectionID, string memory _name, uint _price, uint _count) public onlyOwner {
+        uint startID = nftCount - 1;
+        uint nftID = mintMore(address(this), _collectionID, _name, _count);
+        for (uint i = 0; i < _count; i++) marketplace.deposit(address(this), startID + i, _price);
+    }
+
     function mintAddDetails(uint _collectionID, string memory _name) private onlyOwner {
         // TODO: check if all properties are set - Pig: body, eyes, nose, mouth, ears, tail
         nfts[nftCount] = NFTDetails(true, getRandomNumber(2) == 1 ? true : false, _name, _collectionID, 1, block.number, block.timestamp);
         collections[_collectionID].nftCount++;
         nftCount++;
+    }
+
+    function factoryStart(uint _nftMaleID, uint _nftFemaleID, string memory _name) public returns (uint){
+        require(ownerOf(_nftMaleID) == msg.sender, 'factoryStart: First ID is not in your wallet');
+        require(ownerOf(_nftFemaleID) == msg.sender, 'factoryStart: Second ID is not in your wallet');
+        require(nfts[_nftMaleID].sex, 'factoryStart: First ID is not male');
+        require(!nfts[_nftFemaleID].sex, 'factoryStart: Second ID is not female');
+        tokenFactory.safeTransferFrom(msg.sender, address(this), breedPrice);
+        tokenFactory.safeTransfer(devFeeAddress, breedPrice * devFeePercent / 10000);
+        tokenFactory.safeTransfer(burnAddress, breedPrice * (10000 - devFeePercent) / 10000);
+        return mint(msg.sender, _name);
     }
 
     function collectionAdd(string memory _name, uint _tokenProductEmission) public onlyOwner {
@@ -213,5 +248,9 @@ contract NFT is ERC721MintMore, Ownable {
             ) return false;
         }
         return true;
+    }
+
+    function setDevFeeAddress(address _devFeeAddress) public onlyOwner {
+        devFeeAddress = _devFeeAddress;
     }
 }
