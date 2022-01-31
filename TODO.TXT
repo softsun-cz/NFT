@@ -9,17 +9,13 @@ TODO:
 - Web - pridat stranku Statistics - zde budou statistiky ke vsem contractum - info o NFT, Token Factory, Token Product, Token Upgrade, Sale, Marketplace, Factory
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
-
-- NFT - presunout vse z Factory do NFT
-- NFT - napsat funkci pro transfer Peer 2 Peer (harvestne product tokeny pri smene)
+- NFT - pridat properties ke kazde kolekci (ted je to oddelene)
+- NFT - napsat funkci "transfer" pro Peer 2 Peer (harvestne product tokeny pred smenou puvodnimu majiteli)
 - NFT - pri prodeji v Marketplace - pouzivat funkci, ktera harvestne tokeny puvodnimu majiteli
 - NFT - opravit generovani nahodnych cisel
 - NFT - pro nove narozeny NFT z Factory breed() dat treba tyden, nez se z nich stane plnohodnotnej token, pak si je clovek muze harvestnout
-- NFT - aktualne jsou tam casti tela natvrdo, umoznit, aby byly dynamicke pro kazdou kolekci zvlast
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
-- NFT (Factory) - mintMore hlasi chybu, kdyz jich vic, jak 50
-- NFT (Factory) - mintToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
-- NFT (Factory) - az na NFT bude vice kolekci, tak u mnozeni kontrolovat, ze jsou ze stejne kolekce
+- NFT - mintToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - Vytvorit multiDev contract (vlastni projekt) - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri
 
 Contracty:

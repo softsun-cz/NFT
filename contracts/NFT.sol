@@ -12,9 +12,8 @@ contract NFT is ERC721MintMore, Ownable {
     using SafeERC20 for IERC20Mint;
     IERC20Mint public tokenProduct;
     IERC20Mint public tokenUpgrade;
-    IERC20Mint public tokenFactory; //TODO: breedcurrency - vsude prehodit
+    IERC20Mint public tokenFactory;
     Marketplace public marketplace;
-    uint public breedPrice;
     uint private rndCounter;
     uint public nftCount;
     string public nftName;
@@ -29,10 +28,12 @@ contract NFT is ERC721MintMore, Ownable {
     event eventNFTRename(uint indexed _nftID, string indexed _nameOld, string indexed _nameNew);
     event eventLevelUpgrade(uint indexed _nftID, uint indexed _levelOld, uint indexed _levelNew);
     event eventHarvestTokenProduct(uint indexed _nftID, address indexed _toAddress, uint indexed _amount);
+    event eventFactory(uint indexed _nftMaleID, uint indexed _nftFemaleID, uint indexed _newID);
     event eventCollectionsAdd(uint indexed _collectionID, string indexed _name, uint indexed _tokenProductEmission);
     event eventCollectionsRename(uint indexed _collectionID, string indexed _nameOld, string indexed _nameNew);
     event eventCollectionSetTokenProductEmission(uint _collectionID, uint indexed _emissionOld, uint indexed _emission);
     event eventCollectionSetTokenUpgradePrice(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
+    event eventCollectionSetTokenFactoryPrice(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
     event eventCollectionsRemove(uint indexed _collectionID);
     event eventPropertiesAdd(uint indexed _propertyID, string indexed _name, uint indexed _basicCount);
     event eventPropertiesRename(uint indexed _propertyID, string indexed _nameOld, string indexed _nameNew);
@@ -44,6 +45,7 @@ contract NFT is ERC721MintMore, Ownable {
         string name;
         uint tokenProductEmission;
         uint tokenUpgradePrice;
+        uint tokenFactoryPrice;
         uint nftCount;
         uint createdTime;
     }
@@ -61,7 +63,7 @@ contract NFT is ERC721MintMore, Ownable {
         string name;
         uint collectionID;
         uint level;
-        uint lastEmissionBlock; // TODO: harvestnout pri zmene majitele
+        uint lastEmissionBlock;
         uint createdTime;
     }
     
@@ -81,6 +83,7 @@ contract NFT is ERC721MintMore, Ownable {
         require(ownerOf(_nftID) == msg.sender, 'transfer: You are not the owner of this NFT');
         //safeTransfer
         // TODO: dopsat
+        // TODO: harvestnout pri zmene majitele
         emit eventTransfer(msg.sender, _toAddress, _nftID);
     }
 
@@ -153,22 +156,22 @@ contract NFT is ERC721MintMore, Ownable {
         nftCount++;
     }
 
-    function factoryStart(uint _nftMaleID, uint _nftFemaleID, string memory _name) public returns (uint) {
-        require(ownerOf(_nftMaleID) == msg.sender, 'factoryStart: First ID is not in your wallet');
-        require(ownerOf(_nftFemaleID) == msg.sender, 'factoryStart: Second ID is not in your wallet');
-        require(nfts[_nftMaleID].sex, 'factoryStart: First ID is not male');
-        require(!nfts[_nftFemaleID].sex, 'factoryStart: Second ID is not female');
-        tokenFactory.safeTransferFrom(msg.sender, address(this), breedPrice);
-        tokenFactory.safeTransfer(devFeeAddress, breedPrice * devFeePercent / 10000);
-        tokenFactory.safeTransfer(burnAddress, breedPrice * (10000 - devFeePercent) / 10000);
-        return mint(msg.sender, _name);
-        // TODO: eventa
+    function factory(uint _nftMaleID, uint _nftFemaleID, string memory _name) public {
+        require(ownerOf(_nftMaleID) == msg.sender, 'factory: First ID is not in your wallet');
+        require(ownerOf(_nftFemaleID) == msg.sender, 'factory: Second ID is not in your wallet');
+        require(nfts[_nftMaleID].collectionID == nfts[_nftFemaleID].collectionID, 'factory: Male ID and female ID are not from the same collection.');
+        require(nfts[_nftMaleID].sex, 'factory: First ID is not male');
+        require(!nfts[_nftFemaleID].sex, 'factory: Second ID is not female');
+        tokenFactory.safeTransferFrom(msg.sender, address(this), collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice);
+        tokenFactory.safeTransfer(devFeeAddress, collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice * devFeePercent / 10000);
+        tokenFactory.safeTransfer(burnAddress, collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice * (10000 - devFeePercent) / 10000);
+        uint newID = mint(msg.sender, _name);
+        emit eventFactory(_nftMaleID, _nftFemaleID, newID);
     }
 
     function collectionAdd(string memory _name, uint _tokenProductEmission) public onlyOwner {
         collections.push(Collections(_name, _tokenProductEmission, 0, block.timestamp));
         emit eventCollectionsAdd(collections.length, _name, _tokenProductEmission);
-        // TODO: eventa
     }
 
     function collectionRename(uint _collectionID, string memory _name) public onlyOwner {
@@ -190,6 +193,13 @@ contract NFT is ERC721MintMore, Ownable {
         uint priceOld = collections[_collectionID].tokenUpgradePrice;
         collections[_collectionID].tokenUpgradePrice = _price;
         emit eventCollectionSetTokenUpgradePrice(_collectionID, priceOld, _price);
+    }
+
+    function collectionSetTokenFactoryPrice(uint _collectionID, uint _price) public onlyOwner {
+        require(collections[_collectionID].nftCount == 0, 'collectionSetTokenFactoryPrice: Cannot set token Upgrade price in collection that has NFTs.');
+        uint priceOld = collections[_collectionID].tokenFactoryPrice;
+        collections[_collectionID].tokenFactoryPrice = _price;
+        emit eventCollectionSetTokenFactoryPrice(_collectionID, priceOld, _price);
     }
 
     function collectionRemove(uint _collectionID) public onlyOwner {
