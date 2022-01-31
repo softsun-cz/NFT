@@ -12,9 +12,12 @@ TODO:
 - Factory - mintMore hlasi chybu, kdyz jich vic, jak 50
 - Factory - mintToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - Factory - az na NFT bude vice kolekci, tak u mnozeni kontrolovat, ze jsou ze stejne kolekce
-- ProductToken - nastavit emisi podle levelu NFT
-- NFT - pridat moznost vice kolekci
-- NFT - pro nove narozeny tokeny z Factory breed() dat treba tyden, nez se z nich stane plnohodnotnej token
+- NFT - nastavit, ze lze menit properties pouze pokud jeste neexistuje jediny token sveho druhu
+- NFT - nastavit emisi tokenu Product podle levelu NFT - uzivatel si muze harvestnout
+- NFT - pri prodeji v Marketplace se puvodnimu majiteli harvestnou product tokeny a novemu to jede od nuly
+- NFT - opravit generovani nahodnych cisel
+- NFT - pro nove narozeny NFT z Factory breed() dat treba tyden, nez se z nich stane plnohodnotnej token, pak si je clovek muze harvestnout
+- NFT - aktualne jsou tam casti tela natvrdo, umoznit, aby byly dynamicke pro kazdou kolekci zvlast
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
 - Vytvorit multiDev contract (vlastni projekt) - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri
 

@@ -7,8 +7,8 @@ const TokenUpgrade = artifacts.require('TokenUpgrade');
 const TokenFactory = artifacts.require('TokenFactory');
 
 module.exports = async function(deployer) {
- const nftName = 'Piggy';
- const nftSymbol = 'PIG';
+ const nftName = 'Animals Town';
+ const nftSymbol = 'ATOWN';
  const tokenFactoryName = 'Love';
  const tokenFactorySymbol = 'LOVE';
  const tokenProductName = 'Gold';
