@@ -9,7 +9,7 @@ import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 contract NFT is ERC721MintMore, Ownable {
-    using SafeERC20 for IERC20;
+    using SafeERC20 for IERC20Mint;
     IERC20Mint public tokenProduct;
     IERC20Mint public tokenUpgrade;
     IERC20Mint public tokenFactory; //TODO: breedcurrency - vsude prehodit
@@ -25,16 +25,20 @@ contract NFT is ERC721MintMore, Ownable {
     Collections[] collections;
     Properties[] properties;
     mapping (uint => NFTDetails) public nfts;
+    event eventTransfer(address indexed _fromAddress, address indexed _toAddress, uint indexed _nftID);
     event eventNFTRename(uint indexed _nftID, string indexed _nameOld, string indexed _nameNew);
+    event eventLevelUpgrade(uint indexed _nftID, uint indexed _levelOld, uint indexed _levelNew);
+    event eventHarvestTokenProduct(uint indexed _nftID, address indexed _toAddress, uint indexed _amount);
     event eventCollectionsAdd(uint indexed _collectionID, string indexed _name, uint indexed _tokenProductEmission);
     event eventCollectionsRename(uint indexed _collectionID, string indexed _nameOld, string indexed _nameNew);
     event eventCollectionSetTokenProductEmission(uint _collectionID, uint indexed _emissionOld, uint indexed _emission);
-    event eventCollectionSetTokenUpgradePrice(uint indexed _collectionID, uint indexed priceOld, uint indexed _price);
+    event eventCollectionSetTokenUpgradePrice(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
     event eventCollectionsRemove(uint indexed _collectionID);
     event eventPropertiesAdd(uint indexed _propertyID, string indexed _name, uint indexed _basicCount);
     event eventPropertiesRename(uint indexed _propertyID, string indexed _nameOld, string indexed _nameNew);
     event eventPropertiesChangeBasicCount(uint _propertyID, uint _basicCountOld, uint _basicCount);
     event eventPropertiesRemove(uint indexed _propertyID); 
+    event eventSetDevFeeAddress(address indexed devFeeAddressOld, address indexed _devFeeAddress);
 
     struct Collections {
         string name;
@@ -74,8 +78,10 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function transfer(address _toAddress, uint _nftID) public {
-        require(ownerOf(_nftID) == msg.sender, 'safeTransfer: You are not the owner of this NFT');
-        safeTransfer
+        require(ownerOf(_nftID) == msg.sender, 'transfer: You are not the owner of this NFT');
+        //safeTransfer
+        // TODO: dopsat
+        emit eventTransfer(msg.sender, _toAddress, _nftID);
     }
 
     function nftRename(uint _nftID, string memory _name) public {
@@ -87,26 +93,29 @@ contract NFT is ERC721MintMore, Ownable {
         emit eventNFTRename(_nftID, nameOld, _name);
     }
 
-    function levelUp(uint _nftID, uint _levels) public {
+    function levelUpgrade(uint _nftID, uint _levels) public {
         // TODO: otestovat, jestli to hodi chybu, kdyz nemam dostatek tokenu, pokud to projde s nizsi castkou, tak tam pridat require
-        require(ownerOf(_nftID) == msg.sender, 'levelUp: You are not the owner of this NFT');
+        require(ownerOf(_nftID) == msg.sender, 'levelUpgrade: You are not the owner of this NFT');
         uint amount = _levels * collections[nfts[_nftID].collectionID].tokenUpgradePrice;
-        require(tokenUpgrade.allowance(msg.sender, address(this)) >= amount, 'levelUp: Token Upgrade allowance is too low');
-        harvestTokenProduct(_nftID);
+        require(tokenUpgrade.allowance(msg.sender, address(this)) >= amount, 'levelUpgrade: Token Upgrade allowance is too low');
         tokenUpgrade.safeTransferFrom(msg.sender, address(this), amount);
         tokenUpgrade.safeTransfer(devFeeAddress, amount * devFeePercent / 10000);
         tokenUpgrade.safeTransfer(burnAddress, amount * (10000 - devFeePercent) / 10000);
+        harvestTokenProduct(_nftID);
+        uint levelOld = nfts[_nftID].level;
         nfts[_nftID].level += _levels;
+        emit eventLevelUpgrade(_nftID, levelOld, nfts[_nftID].level);
     }
 
     function harvestTokenProduct(uint _nftID) public {
         require(ownerOf(_nftID) == msg.sender, 'harvestTokenProduct: You are not the owner of this NFT');
-        // TODO: pokud je owner dev (nebo factory nebo cokoliv bude na zacatku, kdyz je uplne nove NFT, pak neemitovat Token Upgrade)
+        // TODO: pokud je owner dev (nebo nft samotne nebo cokoliv bude na zacatku, kdyz je uplne nove NFT, pak neemitovat Token Upgrade)
         uint toHarvest = getTokenProductToHarvest(_nftID);
         require(toHarvest != 0, 'harvestTokenProduct: No tokens to harvest');
         tokenProduct.mint(toHarvest);
         tokenProduct.safeTransfer(msg.sender, toHarvest);
         nfts[_nftID].lastEmissionBlock = block.number;
+        emit eventHarvestTokenProduct(_nftID, msg.sender, toHarvest);
     }
 
     function getTokenProductToHarvest(uint _nftID) public view returns(uint) {
@@ -144,7 +153,7 @@ contract NFT is ERC721MintMore, Ownable {
         nftCount++;
     }
 
-    function factoryStart(uint _nftMaleID, uint _nftFemaleID, string memory _name) public returns (uint){
+    function factoryStart(uint _nftMaleID, uint _nftFemaleID, string memory _name) public returns (uint) {
         require(ownerOf(_nftMaleID) == msg.sender, 'factoryStart: First ID is not in your wallet');
         require(ownerOf(_nftFemaleID) == msg.sender, 'factoryStart: Second ID is not in your wallet');
         require(nfts[_nftMaleID].sex, 'factoryStart: First ID is not male');
@@ -153,11 +162,13 @@ contract NFT is ERC721MintMore, Ownable {
         tokenFactory.safeTransfer(devFeeAddress, breedPrice * devFeePercent / 10000);
         tokenFactory.safeTransfer(burnAddress, breedPrice * (10000 - devFeePercent) / 10000);
         return mint(msg.sender, _name);
+        // TODO: eventa
     }
 
     function collectionAdd(string memory _name, uint _tokenProductEmission) public onlyOwner {
         collections.push(Collections(_name, _tokenProductEmission, 0, block.timestamp));
         emit eventCollectionsAdd(collections.length, _name, _tokenProductEmission);
+        // TODO: eventa
     }
 
     function collectionRename(uint _collectionID, string memory _name) public onlyOwner {
@@ -251,6 +262,8 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function setDevFeeAddress(address _devFeeAddress) public onlyOwner {
+        address devFeeAddressOld = devFeeAddress;
         devFeeAddress = _devFeeAddress;
+        emit eventSetDevFeeAddress(devFeeAddressOld, _devFeeAddress);
     }
 }
