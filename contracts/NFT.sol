@@ -15,11 +15,12 @@ contract NFT is ERC721MintMore, Ownable {
     string public nftSymbol;
     Collections[] collections;
     Properties[] properties;
-    mapping (uint => NFTDetails) public nftDetails;
+    mapping (uint => NFTDetails) public nfts;
     event eventNFTRename(uint indexed _nftID, string indexed _nameOld, string indexed _nameNew);
-    event eventCollectionsAdd(uint indexed _collectionID, string indexed _name, uint indexed _productTokenEmission);
+    event eventCollectionsAdd(uint indexed _collectionID, string indexed _name, uint indexed _tokenProductEmission);
     event eventCollectionsRename(uint indexed _collectionID, string indexed _nameOld, string indexed _nameNew);
-    event eventCollectionChangeEmission(uint _collectionID, uint indexed _emissionOld, uint indexed _emission);
+    event eventCollectionSetTokenProductEmission(uint _collectionID, uint indexed _emissionOld, uint indexed _emission);
+    event eventCollectionSetTokenUpgradePrice(uint indexed _collectionID, uint indexed priceOld, uint indexed _price);
     event eventCollectionsRemove(uint indexed _collectionID);
     event eventPropertiesAdd(uint indexed _propertyID, string indexed _name, uint indexed _basicCount);
     event eventPropertiesRename(uint indexed _propertyID, string indexed _nameOld, string indexed _nameNew);
@@ -27,9 +28,9 @@ contract NFT is ERC721MintMore, Ownable {
     event eventPropertiesRemove(uint indexed _propertyID); 
 
     struct Collections {
-        bool exists;
         string name;
         uint tokenProductEmission;
+        uint tokenUpgradePrice; // TODO: napsat fci, ktera to meni, pokud jeste neni NFT, pridat do add
         uint nftCount;
         uint createdTime;
     }
@@ -47,10 +48,12 @@ contract NFT is ERC721MintMore, Ownable {
         string name;
         uint collectionID;
         uint level;
-        uint emissionUpdateTime; // TODO: updatovat pri harvestu a pri zmene levelu - pri zmene levelu se udela harvest
+        uint lastEmissionBlock; // TODO: harvestnout pri zmene levelu
         uint createdTime;
     }
+    
     // TODO: pridat kod pro upgrade tokenu
+
     constructor(string memory _nftName, string memory _nftSymbol, address _tokenProductAddress, address _tokenUpgradeAddress) ERC721MintMore(_nftName, _nftSymbol) {
         nftName = _nftName;
         nftSymbol = _nftSymbol;
@@ -62,9 +65,34 @@ contract NFT is ERC721MintMore, Ownable {
         require(ownerOf(_nftID) == msg.sender, 'setNFTName: You are not the owner of this NFT');
         require(getUTFStrLen(_name) <= 16, 'setNFTName: Name is too long. Maximum: 16 characters');
         require(getCharMatch(_name), 'setNFTName: Name can contain only a-z, A-Z, 0-9, space and dot');
-        string memory nameOld = nftDetails[_nftID].name;
-        nftDetails[_nftID].name = _name;
+        string memory nameOld = nfts[_nftID].name;
+        nfts[_nftID].name = _name;
         emit eventNFTRename(_nftID, nameOld, _name);
+    }
+
+    function levelUp(uint _nftID, uint _levels) public {
+        require(ownerOf(_nftID) == msg.sender, 'levelUp: You are not the owner of this NFT');
+        uint amount = _levels * collections[nfts[_nftID].collectionID].tokeUpgradePrice;
+        require(tokenUpgrade.allowance >= amount, 'levelUp: ');
+        // TODO: otestovat, jestli to hodi chybu, kdyz nemam dostatek tokenu, pokud to projde s nizsi castkou, tak tam pridat require
+        tokenUpgrade.safeTransferFrom();
+        nfts[_nftID].level += _levels;
+    }
+
+    function harvestTokenProduct(uint _nftID) public {
+        require(ownerOf(_nftID) == msg.sender, 'harvestTokenProduct: You are not the owner of this NFT');
+        // TODO: pokud je owner dev (uplne novy NFT, pak neemitovat Token Upgrade)
+        uint toHarvest = getTokenProductToHarvest(_nftID);
+        require(toHarvest != 0, 'harvestTokenProduct: No tokens to harvest');
+        tokenProduct.mint(toHarvest);
+        tokenProduct.safeTransfer(msg.sender, toHarvest);
+        nfts[_nftID].lastEmissionBlock = block.number;
+    }
+
+    
+
+    function getTokenProductToHarvest(uint _nftID) public {
+        return (block.number - nfts[_nftID].lastEmissionBlock) * nfts[_nftID].level * collections[nfts[_nftID].collectionID].tokenProductEmission / tokenUpgrade.decimals();
     }
 
     function mint(address _recipient, uint _collectionID, string memory _name) public onlyOwner returns (uint) {
@@ -86,16 +114,15 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function mintAddDetails(uint _collectionID, string memory _name) private onlyOwner {
-        // TODO: check if all properties are set!
-        // body, eyes, nose, mouth, ears, tail
-        // getPropertiesByCollection ?
-        nftDetails[nftCount] = NFTDetails(true, getRandomNumber(2) == 1 ? true : false, _name, _collectionID, 1, block.timestamp);
+        // TODO: check if all properties are set - Pig: body, eyes, nose, mouth, ears, tail
+        nfts[nftCount] = NFTDetails(true, getRandomNumber(2) == 1 ? true : false, _name, _collectionID, 1, block.number, block.timestamp);
+        collections[_collectionID].nftCount++;
         nftCount++;
     }
 
-    function collectionAdd(string memory _name, uint _productTokenEmission) public onlyOwner {
-        collections.push(Collections(true, _name, _productTokenEmission, block.timestamp));
-        emit eventCollectionsAdd(collections.length, _name, _productTokenEmission);
+    function collectionAdd(string memory _name, uint _tokenProductEmission) public onlyOwner {
+        collections.push(Collections(_name, _tokenProductEmission, 0, block.timestamp));
+        emit eventCollectionsAdd(collections.length, _name, _tokenProductEmission);
     }
 
     function collectionRename(uint _collectionID, string memory _name) public onlyOwner {
@@ -105,15 +132,19 @@ contract NFT is ERC721MintMore, Ownable {
         emit eventCollectionsRename(_collectionID, nameOld, _name);
     }
 
-    function collectionChangeEmission(uint _collectionID, uint _emission) public onlyOwner {
-        require(collections[_collectionID].nftCount == 0, 'collectionRemove: Cannot remove collection that has NFTs.');
-        uint emissionOld = collections[_collectionID].productTokenEmission;
-        collections[_collectionID].productTokenEmission = _emission;
-        emit eventCollectionChangeEmission(_collectionID, emissionOld, _emission);
+    function collectionSetTokenProductEmission(uint _collectionID, uint _emission) public onlyOwner {
+        require(collections[_collectionID].nftCount == 0, 'collectionSetTokenProductEmission: Cannot set token Product emission in collection that has NFTs.');
+        uint emissionOld = collections[_collectionID].tokenProductEmission;
+        collections[_collectionID].tokenProductEmission = _emission;
+        emit eventCollectionSetTokenProductEmission(_collectionID, emissionOld, _emission);
     }
 
-    // TODO: emit token
-    // TODO: myslet na to, ze nektery NFT mohou emitovat 0 product tokenu
+    function collectionSetTokenUpgradePrice(uint _collectionID, uint _price) public onlyOwner {
+        require(collections[_collectionID].nftCount == 0, 'collectionSetTokenUpgradePrace: Cannot set token Upgrade price in collection that has NFTs.');
+        uint priceOld = collections[_collectionID].tokenUpgradePrice;
+        collections[_collectionID].tokenUpgradePrice = _price;
+        emit eventCollectionSetTokenUpgradePrice(_collectionID, priceOld, _price);
+    }
 
     function collectionRemove(uint _collectionID) public onlyOwner {
         require(_collectionID <= collections.length, 'collectionRemove: Wrong collection ID');
@@ -124,7 +155,7 @@ contract NFT is ERC721MintMore, Ownable {
 
     function propertyAdd(uint _collectionID, string memory _name, uint _basicCount) public onlyOwner {
         require(_collectionID <= collections.length, 'propertyAdd: Wrong collection ID');
-        properties.push(Collections(_collectionID, _name, _basicCount, block.timestamp));
+        properties.push(Properties(_collectionID, _name, _basicCount, block.timestamp));
         emit eventPropertiesAdd(properties.length, _name, _basicCount);
     }
 
@@ -139,7 +170,7 @@ contract NFT is ERC721MintMore, Ownable {
         require(_propertyID <= properties.length, 'propertyChangeBasicCount: Wrong property ID');
         require(collections[properties[_propertyID].collectionID].nftCount == 0, 'propertyChangeBasicCount: Cannot remove property, because it was already used in collection that has NFTs.');
         uint basicCountOld = properties[_propertyID].basicCount;
-        collections[_propertyID].basicCount = _basicCount;
+        properties[_propertyID].basicCount = _basicCount;
         emit eventPropertiesChangeBasicCount(_propertyID, basicCountOld, _basicCount);
     }
 

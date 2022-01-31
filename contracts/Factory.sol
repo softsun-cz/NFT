@@ -27,12 +27,12 @@ contract Factory is Ownable {
         devFeeAddress = msg.sender;
     }
 
-    function mint(address _recipient, string memory _name) public onlyOwner returns (uint) {
-        return nft.mint(_recipient, _name);
+    function mint(address _recipient, uint _collectionID, string memory _name) public onlyOwner returns (uint) {
+        return nft.mint(_recipient, _collectionID, _name);
     }
 
-    function mintMore(address _recipient, string memory _name, uint _count) public onlyOwner {
-        nft.mintMore(_recipient, _name, _count);
+    function mintMore(address _recipient, _collectionID, string memory _name, uint _count) public onlyOwner {
+        nft.mintMore(_recipient, _collectionID, _name, _count);
     }
 
     function mintToMarketplace(uint _count, string memory _name, uint _price) public onlyOwner {
