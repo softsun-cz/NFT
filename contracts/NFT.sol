@@ -25,8 +25,9 @@ contract NFT is ERC721MintMore, Ownable {
     mapping (uint => NFTDetails) public nfts;
     event eventTransfer(address indexed _fromAddress, address indexed _toAddress, uint indexed _nftID);
     event eventNFTRename(uint indexed _nftID, string indexed _nameOld, string indexed _nameNew);
-    event eventLevelUpgrade(uint indexed _nftID, uint indexed _levelOld, uint indexed _levelNew);
-    event eventHarvestTokenProduct(uint indexed _nftID, address indexed _toAddress, uint indexed _amount);
+    event eventNFTSetNFTProperty(uint indexed _nftID, uint indexed valueOld, uint indexed _value);
+    event eventNFTLevelUpgrade(uint indexed _nftID, uint indexed _levelOld, uint indexed _levelNew);
+    event eventNFTHarvestTokenProduct(uint indexed _nftID, address indexed _toAddress, uint indexed _amount);
     event eventFactory(uint indexed _nftMaleID, uint indexed _nftFemaleID, uint indexed _newID);
     event eventCollectionsAdd(uint indexed _collectionID, string indexed _name, uint indexed _tokenProductEmission);
     event eventCollectionsRename(uint indexed _collectionID, string indexed _nameOld, string indexed _nameNew);
@@ -61,6 +62,7 @@ contract NFT is ERC721MintMore, Ownable {
     struct NFTDetails {
         bool exists;
         bool sex;
+        // TODO: pridat vsechny properties podle kolekce nejak
         string name;
         uint collectionID;
         uint level;
@@ -82,7 +84,7 @@ contract NFT is ERC721MintMore, Ownable {
 
     function transfer(address _toAddress, uint _nftID) public {
         require(ownerOf(_nftID) == msg.sender, 'transfer: You are not the owner of this NFT');
-        harvestTokenProduct(_nftID);
+        nftHarvestTokenProduct(_nftID);
         safeTransferFrom(msg.sender, address(this), _nftID);
         safeTransferFrom(address(this), _toAddress, _nftID);
         emit eventTransfer(msg.sender, _toAddress, _nftID);
@@ -97,27 +99,36 @@ contract NFT is ERC721MintMore, Ownable {
         emit eventNFTRename(_nftID, nameOld, _name);
     }
 
-    function levelUpgrade(uint _nftID, uint _levels) public {
+    function nftSetProperty(uint _nftID, uint _propertyID, uint _value) public {
+        require(ownerOf(_nftID) == msg.sender, 'changeNFTProperty: You are not the owner of this NFT');
+        require(collections[nfts[_nftID].collectionID].properties.length >= _propertyID, 'changeNFTProperty: Property does not exist');
+        require(collections[nfts[_nftID].collectionID].properties[_propertyID].basicCount <= _value , 'changeNFTProperty: This property is not available');
+        uint valueOld = nfts[_nftID].properties[_propertyID];
+        nfts[_nftID].properties[_propertyID] = _value;
+        emit eventNFTSetNFTProperty(_nftID, valueOld, _value);
+    }
+
+    function nftLevelUpgrade(uint _nftID, uint _levels) public {
         require(ownerOf(_nftID) == msg.sender, 'levelUpgrade: You are not the owner of this NFT');
         uint amount = _levels * collections[nfts[_nftID].collectionID].tokenUpgradePrice;
         require(tokenUpgrade.allowance(msg.sender, address(this)) >= amount, 'levelUpgrade: Token Upgrade allowance is too low');
         tokenUpgrade.safeTransferFrom(msg.sender, address(this), amount);
         tokenUpgrade.safeTransfer(devFeeAddress, amount * devFeePercent / 10000);
         tokenUpgrade.safeTransfer(burnAddress, amount * (10000 - devFeePercent) / 10000);
-        harvestTokenProduct(_nftID);
+        nftHarvestTokenProduct(_nftID);
         uint levelOld = nfts[_nftID].level;
         nfts[_nftID].level += _levels;
-        emit eventLevelUpgrade(_nftID, levelOld, nfts[_nftID].level);
+        emit eventNFTLevelUpgrade(_nftID, levelOld, nfts[_nftID].level);
     }
 
-    function harvestTokenProduct(uint _nftID) public {
+    function nftHarvestTokenProduct(uint _nftID) public {
         require(ownerOf(_nftID) == msg.sender, 'harvestTokenProduct: You are not the owner of this NFT');
         uint toHarvest = getTokenProductToHarvest(_nftID);
         require(toHarvest != 0, 'harvestTokenProduct: No tokens to harvest');
         tokenProduct.mint(toHarvest);
         tokenProduct.safeTransfer(msg.sender, toHarvest);
         nfts[_nftID].lastEmissionBlock = block.number;
-        emit eventHarvestTokenProduct(_nftID, msg.sender, toHarvest);
+        emit eventNFTHarvestTokenProduct(_nftID, msg.sender, toHarvest);
     }
 
     function getTokenProductToHarvest(uint _nftID) public view returns(uint) {
@@ -160,6 +171,8 @@ contract NFT is ERC721MintMore, Ownable {
         require(nfts[_nftMaleID].collectionID == nfts[_nftFemaleID].collectionID, 'factory: Male ID and female ID are not from the same collection.');
         require(nfts[_nftMaleID].sex, 'factory: First ID is not male');
         require(!nfts[_nftFemaleID].sex, 'factory: Second ID is not female');
+        require(nfts[_nftMaleID].createdTime + collections[nfts[_nftMaleID].collectionID].factoryTime < block.timestamp, 'factory: Male NFT is too young');
+        require(nfts[_nftFemaleID].createdTime + collections[nfts[_nftFemaleID].collectionID].factoryTime < block.timestamp, 'factory: Female NFT is too young');
         tokenFactory.safeTransferFrom(msg.sender, address(this), collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice);
         tokenFactory.safeTransfer(devFeeAddress, collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice * devFeePercent / 10000);
         tokenFactory.safeTransfer(burnAddress, collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice * (10000 - devFeePercent) / 10000);
