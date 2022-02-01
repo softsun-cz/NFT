@@ -166,8 +166,9 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function collectionAdd(string memory _name, uint _tokenProductEmission, uint _tokenUpgradePrice, uint _tokenFactoryPrice) public onlyOwner {
-        Properties[] memory prop;
-        collections.push(Collections(_name, prop, _tokenProductEmission, _tokenUpgradePrice, _tokenFactoryPrice, 0, block.timestamp));
+        Properties[] memory propTemplate;
+        //collections.push(Collections(_name, new Properties[](0), _tokenProductEmission, _tokenUpgradePrice, _tokenFactoryPrice, 0, block.timestamp));
+        collections.push(Collections(_name, propTemplate, _tokenProductEmission, _tokenUpgradePrice, _tokenFactoryPrice, 0, block.timestamp));
         emit eventCollectionsAdd(collections.length, _name, _tokenProductEmission);
     }
 

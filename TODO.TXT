@@ -10,11 +10,10 @@ TODO:
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - Marketplace - nastavit, aby pouzival funkci nft.transfer (ktera harvestne tokeny puvodnimu majiteli)
+- NFT - collectionAdd() - neslo vlozit prazdne pole properties - ani z promenne "Properties[] memory prop;", ani jako "new Properties[]()"
 - NFT - pro nove narozeny NFT factory() dat treba tyden, nez se z nich stane plnohodnotnej token, pak si je clovek muze harvestnout
 - NFT - neemitovat product tokeny, pokud owner je nase penezenka
 - NFT - LevelUpgrade() - otestovat, jestli to hodi chybu, kdyz nemam dostatek tokenu, pokud to projde s nizsi castkou, tak tam pridat require
-- NFT - mintAddDetails() - zjistit, jestli vsechny properties jsou nastaveny - Napr. u Pig je to: body, eyes, nose, mouth, ears, tail
-- NFT - collectionAdd() - zjistit, jestli nema byt "storage" misto "memory" (jestli se zapisuje do blockchainu)
 - NFT - opravit generovani nahodnych cisel
 - NFT - mintToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - NFT - pridat moznost properties, ktere nejsou basic
