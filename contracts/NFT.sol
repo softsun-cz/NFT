@@ -22,7 +22,6 @@ contract NFT is ERC721MintMore, Ownable {
     address public devFeeAddress;
     uint8 public devFeePercent;
     Collections[] collections;
-    Properties[] properties;
     mapping (uint => NFTDetails) public nfts;
     event eventTransfer(address indexed _fromAddress, address indexed _toAddress, uint indexed _nftID);
     event eventNFTRename(uint indexed _nftID, string indexed _nameOld, string indexed _nameNew);
@@ -31,18 +30,19 @@ contract NFT is ERC721MintMore, Ownable {
     event eventFactory(uint indexed _nftMaleID, uint indexed _nftFemaleID, uint indexed _newID);
     event eventCollectionsAdd(uint indexed _collectionID, string indexed _name, uint indexed _tokenProductEmission);
     event eventCollectionsRename(uint indexed _collectionID, string indexed _nameOld, string indexed _nameNew);
-    event eventCollectionSetTokenProductEmission(uint _collectionID, uint indexed _emissionOld, uint indexed _emission);
+    event eventCollectionSetTokenProductEmission(uint _collectionID, uint indexed _emissionOld, uint indexed _emissionNew);
     event eventCollectionSetTokenUpgradePrice(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
     event eventCollectionSetTokenFactoryPrice(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
     event eventCollectionsRemove(uint indexed _collectionID);
-    event eventPropertiesAdd(uint indexed _propertyID, string indexed _name, uint indexed _basicCount);
-    event eventPropertiesRename(uint indexed _propertyID, string indexed _nameOld, string indexed _nameNew);
-    event eventPropertiesChangeBasicCount(uint _propertyID, uint _basicCountOld, uint _basicCount);
-    event eventPropertiesRemove(uint indexed _propertyID); 
+    event eventCollectionPropertiesAdd(uint indexed _collectionID, uint indexed _propertyID, string indexed _name);
+    event eventCollectionPropertiesRename(uint indexed _collectionID, uint indexed _propertyID, string indexed _name);
+    event eventCollectionPropertiesSetBasicCount(uint indexed _collectionID, uint _propertyID, uint _basicCount);
+    event eventCollectionPropertiesRemove(uint indexed _collectionID, uint indexed _propertyID);
     event eventSetDevFeeAddress(address indexed devFeeAddressOld, address indexed _devFeeAddress);
-
+    
     struct Collections {
         string name;
+        Properties[] properties;
         uint tokenProductEmission;
         uint tokenUpgradePrice;
         uint tokenFactoryPrice;
@@ -51,7 +51,6 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     struct Properties {
-        uint collectionID;
         string name;
         uint basicCount;
         uint createdTime;
@@ -170,7 +169,7 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function collectionAdd(string memory _name, uint _tokenProductEmission) public onlyOwner {
-        collections.push(Collections(_name, _tokenProductEmission, 0, block.timestamp));
+        collections.push(Collections(_name, Properties[], _tokenProductEmission, 0, block.timestamp));
         emit eventCollectionsAdd(collections.length, _name, _tokenProductEmission);
     }
 
@@ -209,32 +208,34 @@ contract NFT is ERC721MintMore, Ownable {
         emit eventCollectionsRemove(_collectionID);
     }
 
-    function propertyAdd(uint _collectionID, string memory _name, uint _basicCount) public onlyOwner {
-        require(_collectionID <= collections.length, 'propertyAdd: Wrong collection ID');
-        properties.push(Properties(_collectionID, _name, _basicCount, block.timestamp));
-        emit eventPropertiesAdd(properties.length, _name, _basicCount);
+    function collectionPropertyAdd(uint _collectionID, string memory _name, uint _basicCount) public onlyOwner {
+        require(_collectionID <= collections.length, 'collectionPropertyAdd: Wrong collection ID');
+        require(collections[_collectionID].nftCount == 0, 'collectionPropertyAdd: Cannot add property, because it was already used in collection that has NFTs.');
+        collections[_collectionID].properties.push(Properties(_name, _basicCount, block.timestamp));
+        emit eventCollectionPropertiesAdd(_collectionID, collections[_collectionID].properties.length, _name);
     }
 
-    function propertyRename(uint _propertyID, string memory _name) public onlyOwner {
-        require(_propertyID <= properties.length, 'propertyRename: Wrong property ID');
-        string memory nameOld = properties[_propertyID].name;
+    function collectionPropertyRename(uint _collectionID, uint _propertyID, string memory _name) public onlyOwner {
+        require(_collectionID <= collections.length, 'collectionPropertyRename: Wrong collection ID');
+        require(_propertyID <= collections[_collectionID].properties.length, 'collectionPropertyRename: Wrong property ID');
         collections[_propertyID].name = _name;
-        emit eventPropertiesRename(_propertyID, nameOld, _name);
+        emit eventCollectionPropertiesRename(_collectionID, _propertyID, _name);
     }
 
-    function propertyChangeBasicCount(uint _propertyID, uint _basicCount) public onlyOwner {
-        require(_propertyID <= properties.length, 'propertyChangeBasicCount: Wrong property ID');
-        require(collections[properties[_propertyID].collectionID].nftCount == 0, 'propertyChangeBasicCount: Cannot remove property, because it was already used in collection that has NFTs.');
-        uint basicCountOld = properties[_propertyID].basicCount;
-        properties[_propertyID].basicCount = _basicCount;
-        emit eventPropertiesChangeBasicCount(_propertyID, basicCountOld, _basicCount);
+    function collectionPropertySetBasicCount(uint _collectionID, uint _propertyID, uint _basicCount) public onlyOwner {
+        require(_collectionID <= collections.length, 'collectionPropertySetBasicCount: Wrong collection ID');
+        require(_propertyID <= collections[_collectionID].properties.length, 'collectionPropertySetBasicCount: Wrong property ID');
+        require(collections[_collectionID].nftCount == 0, 'collectionPropertySetBasicCount: Cannot remove property, because it was already used in collection that has NFTs.');
+        collections[_collectionID].properties[_propertyID].basicCount = _basicCount;
+        emit eventCollectionPropertiesSetBasicCount(_collectionID, _propertyID, _basicCount);
     }
 
-    function propertyRemove(uint _propertyID) public onlyOwner {
-        require(_propertyID <= properties.length, 'propertyRemove: Wrong property ID');
-        require(collections[properties[_propertyID].collectionID].nftCount == 0, 'propertyRemove: Cannot remove property, because it was already used in collection that has NFTs.');
-        delete properties[_propertyID];
-        emit eventPropertiesRemove(_propertyID);
+    function collectionPropertyRemove(uint _collectionID, uint _propertyID) public onlyOwner {
+        require(_collectionID <= collections.length, 'collectionPropertyRemove: Wrong collection ID');
+        require(_propertyID <= collections[_collectionID].properties.length, 'collectionPropertyRemove: Wrong property ID');
+        require(collections[_collectionID].nftCount == 0, 'collectionPropertyRemove: Cannot remove property, because it was already used in collection that has NFTs.');
+        delete collections[_collectionID].properties[_propertyID];
+        emit eventCollectionPropertiesRemove(_collectionID, _propertyID);
     }
 
     function getRandomNumber(uint _num) private returns (uint) {
