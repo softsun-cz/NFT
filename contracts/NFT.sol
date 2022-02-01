@@ -30,6 +30,7 @@ contract NFT is ERC721MintMore, Ownable {
     event eventFactory(uint indexed _nftMaleID, uint indexed _nftFemaleID, uint indexed _newID);
     event eventCollectionsAdd(uint indexed _collectionID, string indexed _name, uint indexed _tokenProductEmission);
     event eventCollectionsRename(uint indexed _collectionID, string indexed _nameOld, string indexed _nameNew);
+    event eventCollectionSetFactoryTime(uint indexed _collectionID, uint indexed _factoryTimeOld, uint indexed _factoryTimeNew);
     event eventCollectionSetTokenProductEmission(uint _collectionID, uint indexed _emissionOld, uint indexed _emissionNew);
     event eventCollectionSetTokenUpgradePrice(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
     event eventCollectionSetTokenFactoryPrice(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
@@ -43,6 +44,7 @@ contract NFT is ERC721MintMore, Ownable {
     struct Collections {
         string name;
         Properties[] properties;
+        uint factoryTime; // 50400 = 1 day
         uint tokenProductEmission;
         uint tokenUpgradePrice;
         uint tokenFactoryPrice;
@@ -165,10 +167,10 @@ contract NFT is ERC721MintMore, Ownable {
         emit eventFactory(_nftMaleID, _nftFemaleID, newID);
     }
 
-    function collectionAdd(string memory _name, uint _tokenProductEmission, uint _tokenUpgradePrice, uint _tokenFactoryPrice) public onlyOwner {
+    function collectionAdd(string memory _name, uint _factoryTime, uint _tokenProductEmission, uint _tokenUpgradePrice, uint _tokenFactoryPrice) public onlyOwner {
         Properties[] memory propTemplate;
         //collections.push(Collections(_name, new Properties[](0), _tokenProductEmission, _tokenUpgradePrice, _tokenFactoryPrice, 0, block.timestamp));
-        collections.push(Collections(_name, propTemplate, _tokenProductEmission, _tokenUpgradePrice, _tokenFactoryPrice, 0, block.timestamp));
+        collections.push(Collections(_name, propTemplate, _factoryTime, _tokenProductEmission, _tokenUpgradePrice, _tokenFactoryPrice, 0, block.timestamp));
         emit eventCollectionsAdd(collections.length, _name, _tokenProductEmission);
     }
 
@@ -177,6 +179,13 @@ contract NFT is ERC721MintMore, Ownable {
         string memory nameOld = collections[_collectionID].name;
         collections[_collectionID].name = _name;
         emit eventCollectionsRename(_collectionID, nameOld, _name);
+    }
+
+    function collectionSetFactoryTime(uint _collectionID, uint _factoryTime) public onlyOwner {
+        require(collections[_collectionID].nftCount == 0, 'collectionSetFactoryTime: Cannot set factory time in collection that has NFTs.');
+        uint factoryTimeOld = collections[_collectionID].factoryTime;
+        collections[_collectionID].factoryTime = _factoryTime;
+        emit eventCollectionSetFactoryTime(_collectionID, factoryTimeOld, _factoryTime);
     }
 
     function collectionSetTokenProductEmission(uint _collectionID, uint _emission) public onlyOwner {
