@@ -80,9 +80,9 @@ contract NFT is ERC721MintMore, Ownable {
 
     function transfer(address _toAddress, uint _nftID) public {
         require(ownerOf(_nftID) == msg.sender, 'transfer: You are not the owner of this NFT');
-        //safeTransfer
-        // TODO: dopsat
-        // TODO: harvestnout pri zmene majitele
+        harvestTokenProduct(_nftID);
+        safeTransferFrom(msg.sender, address(this), _nftID);
+        safeTransferFrom(address(this), _toAddress, _nftID);
         emit eventTransfer(msg.sender, _toAddress, _nftID);
     }
 
