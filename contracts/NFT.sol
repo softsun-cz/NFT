@@ -4,12 +4,12 @@ pragma solidity ^0.8.0;
 
 import './libs/ERC721MintMore.sol';
 import './libs/IERC20Mint.sol';
+import './libs/SafeERC20Mint.sol';
 import './Marketplace.sol';
-import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 contract NFT is ERC721MintMore, Ownable {
-    using SafeERC20 for IERC20Mint;
+    using SafeERC20Mint for IERC20Mint;
     IERC20Mint public tokenProduct;
     IERC20Mint public tokenUpgrade;
     IERC20Mint public tokenFactory;
@@ -96,7 +96,6 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function levelUpgrade(uint _nftID, uint _levels) public {
-        // TODO: otestovat, jestli to hodi chybu, kdyz nemam dostatek tokenu, pokud to projde s nizsi castkou, tak tam pridat require
         require(ownerOf(_nftID) == msg.sender, 'levelUpgrade: You are not the owner of this NFT');
         uint amount = _levels * collections[nfts[_nftID].collectionID].tokenUpgradePrice;
         require(tokenUpgrade.allowance(msg.sender, address(this)) >= amount, 'levelUpgrade: Token Upgrade allowance is too low');
@@ -111,7 +110,6 @@ contract NFT is ERC721MintMore, Ownable {
 
     function harvestTokenProduct(uint _nftID) public {
         require(ownerOf(_nftID) == msg.sender, 'harvestTokenProduct: You are not the owner of this NFT');
-        // TODO: pokud je owner dev (nebo nft samotne nebo cokoliv bude na zacatku, kdyz je uplne nove NFT, pak neemitovat Token Upgrade)
         uint toHarvest = getTokenProductToHarvest(_nftID);
         require(toHarvest != 0, 'harvestTokenProduct: No tokens to harvest');
         tokenProduct.mint(toHarvest);
@@ -121,7 +119,7 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function getTokenProductToHarvest(uint _nftID) public view returns(uint) {
-        return (block.number - nfts[_nftID].lastEmissionBlock) * nfts[_nftID].level * collections[nfts[_nftID].collectionID].tokenProductEmission / tokenUpgrade.decimals();
+        return (block.number - nfts[_nftID].lastEmissionBlock) * nfts[_nftID].level * collections[nfts[_nftID].collectionID].tokenProductEmission / 10**tokenUpgrade.decimals();
     }
 
     function mint(address _recipient, uint _collectionID, string memory _name) public onlyOwner returns (uint) {
@@ -144,12 +142,11 @@ contract NFT is ERC721MintMore, Ownable {
 
     function mintMoreToMarketplace(uint _collectionID, string memory _name, uint _price, uint _count) public onlyOwner {
         uint startID = nftCount - 1;
-        uint nftID = mintMore(address(this), _collectionID, _name, _count);
+        mintMore(address(this), _collectionID, _name, _count);
         for (uint i = 0; i < _count; i++) marketplace.deposit(address(this), startID + i, _price);
     }
 
     function mintAddDetails(uint _collectionID, string memory _name) private onlyOwner {
-        // TODO: check if all properties are set - Pig: body, eyes, nose, mouth, ears, tail
         nfts[nftCount] = NFTDetails(true, getRandomNumber(2) == 1 ? true : false, _name, _collectionID, 1, block.number, block.timestamp);
         collections[_collectionID].nftCount++;
         nftCount++;
@@ -164,12 +161,13 @@ contract NFT is ERC721MintMore, Ownable {
         tokenFactory.safeTransferFrom(msg.sender, address(this), collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice);
         tokenFactory.safeTransfer(devFeeAddress, collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice * devFeePercent / 10000);
         tokenFactory.safeTransfer(burnAddress, collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice * (10000 - devFeePercent) / 10000);
-        uint newID = mint(msg.sender, _name);
+        uint newID = mint(msg.sender, nfts[_nftMaleID].collectionID, _name);
         emit eventFactory(_nftMaleID, _nftFemaleID, newID);
     }
 
-    function collectionAdd(string memory _name, uint _tokenProductEmission) public onlyOwner {
-        collections.push(Collections(_name, Properties[], _tokenProductEmission, 0, block.timestamp));
+    function collectionAdd(string memory _name, uint _tokenProductEmission, uint _tokenUpgradePrice, uint _tokenFactoryPrice) public onlyOwner {
+        Properties[] memory prop;
+        collections.push(Collections(_name, prop, _tokenProductEmission, _tokenUpgradePrice, _tokenFactoryPrice, 0, block.timestamp));
         emit eventCollectionsAdd(collections.length, _name, _tokenProductEmission);
     }
 
