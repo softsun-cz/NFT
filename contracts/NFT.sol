@@ -17,11 +17,11 @@ contract NFT is ERC721MintMore, Ownable {
     uint private rndCounter;
     uint public nftCount;
     uint public collectionsCount;
+    uint public devFeePercent;
+    address public devFeeAddress;
+    address public burnAddress;
     string public nftName;
     string public nftSymbol;
-    address public burnAddress;
-    address public devFeeAddress;
-    uint8 public devFeePercent;
     mapping(uint => Collection) public collections;
     mapping (uint => NFTDetails) public nfts;
     event eventTransfer(address indexed _fromAddress, address indexed _toAddress, uint indexed _nftID);
@@ -72,7 +72,7 @@ contract NFT is ERC721MintMore, Ownable {
         uint createdTime;
     }
     
-    constructor(string memory _nftName, string memory _nftSymbol, uint8 _devFeePercent, address _devFeeAddress, address _burnAddress, address _marketplaceAddress, address _tokenFactoryAddress, address _tokenProductAddress, address _tokenUpgradeAddress) ERC721MintMore(_nftName, _nftSymbol) {
+    constructor(string memory _nftName, string memory _nftSymbol, uint _devFeePercent, address _devFeeAddress, address _burnAddress, address _marketplaceAddress, address _tokenFactoryAddress, address _tokenProductAddress, address _tokenUpgradeAddress) ERC721MintMore(_nftName, _nftSymbol) {
         nftName = _nftName;
         nftSymbol = _nftSymbol;
         devFeePercent = _devFeePercent;
