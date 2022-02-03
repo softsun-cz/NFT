@@ -5,7 +5,6 @@ pragma solidity ^0.8.0;
 import './libs/ERC721MintMore.sol';
 import './libs/IERC20Mint.sol';
 import './libs/SafeERC20Mint.sol';
-//import './libs/CollectionManager.sol';
 import './Marketplace.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
@@ -17,10 +16,7 @@ contract NFT is ERC721MintMore, Ownable { //, CollectionManager
     Marketplace public marketplace;
     uint private rndCounter;
     uint public nftCount;
-
     uint public collectionsCount;
-    //uint private collectionsCount;
-
     uint public devFeePercent;
     address public devFeeAddress;
     address public burnAddress;
@@ -47,16 +43,6 @@ contract NFT is ERC721MintMore, Ownable { //, CollectionManager
     event eventCollectionPropertyRemove(uint indexed _collectionID, uint indexed _propertyID);
     event eventSetDevFeeAddress(address indexed devFeeAddressOld, address indexed _devFeeAddress);
     
-    // test:
-    /*
-    function getCollectionsCount() pure public returns (uint) {
-        return collectionsCount;
-    }
-    function setCollectionsCount(uint _num) public returns (uint) {
-        collectionsCount = _num;
-        return collectionsCount;
-    }
-*/
     struct Collection {
         bool exists;
         string name;
@@ -114,7 +100,7 @@ contract NFT is ERC721MintMore, Ownable { //, CollectionManager
         nfts[_nftID].name = _name;
         emit eventNFTRename(_nftID, nameOld, _name);
     }
-/*
+
     function nftSetProperty(uint _nftID, uint _propertyID, uint _value) public {
         require(ownerOf(_nftID) == msg.sender, 'changeNFTProperty: You are not the owner of this NFT');
         require(collections[nfts[_nftID].collectionID].properties.length >= _propertyID, 'changeNFTProperty: Property does not exist');
@@ -123,7 +109,7 @@ contract NFT is ERC721MintMore, Ownable { //, CollectionManager
         nfts[_nftID].properties[_propertyID] = _value;
         emit eventNFTSetNFTProperty(_nftID, valueOld, _value);
     }
-*/
+
     function nftLevelUpgrade(uint _nftID, uint _levels) public {
         require(ownerOf(_nftID) == msg.sender, 'levelUpgrade: You are not the owner of this NFT');
         uint amount = _levels * collections[nfts[_nftID].collectionID].tokenUpgradePrice;
