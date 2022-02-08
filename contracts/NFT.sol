@@ -145,7 +145,6 @@ contract NFT is ERC721MintMore, Ownable {
         require(getCharMatch(_name), 'mint: Name can contain only a-z, A-Z, 0-9, space and dot');
         _safeMint(_recipient, nftCount);
         mintAddDetails(_collectionID, _name);
-        
         return nftCount - 1;
     }
 
@@ -155,7 +154,7 @@ contract NFT is ERC721MintMore, Ownable {
         require(getUTFStrLen(_name) <= 16, 'mintMore: Name is too long. Maximum: 16 characters');
         require(getCharMatch(_name), 'mintMore: Name can contain only a-z, A-Z, 0-9, space and dot');
         _mintMore(_recipient, nftCount, _count);
-        for (uint i = 0; i < _count; i++) mintAddDetails(_collectionID, string(abi.encodePacked(_name, ' ', Strings.toString(i))));
+        for (uint i = 0; i < _count; i++) mintAddDetails(_collectionID, string(abi.encodePacked(_name, ' ', Strings.toString(nftCount + 1))));
         return nftCount - 1;
     }
 
