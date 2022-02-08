@@ -1,6 +1,7 @@
 TODO:
 -----
 - Web - pridat stranku, kde je seznam karticek (NFT), co mam v penezence + moznost odeslat na jinou penezenku - zatim bez obrazku - jen cisla nosu, usi apod.
+- Web - pridat stranku podrobnych informaci o jednotlivych NFT (jmeno, obrazek, parametry, rodice)
 - Web - pridat stranku pro Marketplace
 - Web - pridat stranku Token sale + seznam event (co kdo koupil) - pri evente zobrazit aktualni cenu a kolik tokenu se da koupit za tu cenu
 - Web - pridat vyhledavani podle ID + pridat adresu ownera
@@ -10,14 +11,15 @@ TODO:
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - Marketplace - nastavit, aby pouzival funkci nft.transfer (ktera harvestne tokeny puvodnimu majiteli)
-- NFT - v samostatnem projektu Sample: /root/TEST - v deploy scriptu nesel nacist uint do stringu
-- NFT - mintToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
-- NFT - pridat zmenu vzhledu (upgradeToken - pridat cenu zmeny vzhledu do kolekce)
 - NFT - LevelUpgrade() - otestovat, jestli to hodi chybu, kdyz nemam dostatek tokenu, pokud to projde s nizsi castkou, tak tam pridat require
+- NFT - pridat rodice NFT (pokud jsou)
+- NFT - pridat zmenu vzhledu (upgradeToken - pridat cenu zmeny vzhledu do kolekce)
+- NFT - mintToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - NFT - neemitovat product tokeny, pokud owner je nase penezenka
 - NFT - pridat moznost properties, ktere nejsou basic
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
 - NFT - ERC721MintMore - zmensit a udelat z nej library nebo abstract contract nebo neco takoveho - pokus je v /root/ZALOHA
+- NFT - rozdelit do libraries / abstract contract a zrusit v hardhat.config.js optimizer
 - Vytvorit multiDev contract (vlastni projekt) - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri
 
 Console test:
