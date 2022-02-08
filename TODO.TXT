@@ -18,7 +18,6 @@ TODO:
 - NFT - pridat moznost properties, ktere nejsou basic
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
 - NFT - ERC721MintMore - zmensit a udelat z nej library nebo abstract contract nebo neco takoveho - pokus je v /root/ZALOHA
-- V truffle configu je dole optimizer s "runs"... zjistit, jestli to runs necemu nevadi - psali tam, ze je to pocet pouziti contractu - NFT contract byl prilis velky bez optimizeru
 - Vytvorit multiDev contract (vlastni projekt) - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri
 
 Console test:

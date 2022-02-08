@@ -9,12 +9,3 @@
 yarn install
 ./deploy.sh
 ```
-
-# Used dependencies
-
-- Hardhat 2.8.3
-- Solidity 0.8.11
-- Node v16.13.1
-- NPM 8.3.0
-- Web3.js v1.5.3
-- Yarn 1.22.17
