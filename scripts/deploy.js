@@ -8,31 +8,37 @@ var verifyScript = '';
 const confirmNum = 1;
 
 async function main() {
- const devFeeAddress = '0x650E5c6071f31065d7d5Bf6CaD5173819cA72c41';
- const burnAddress = '0x000000000000000000000000000000000000dEaD';
- const nftName = 'Animals.town';
- const nftSymbol = 'ATOWN';
- const nftDevFeePercent = '500'; // 5%
- const tokenFactoryName = 'Animals.town - Love';
- const tokenFactorySymbol = 'LOVE';
- const tokenProductName = 'Animals.town - Gold';
- const tokenProductSymbol = 'GOLD';
- const tokenUpgradeName = 'Animals.town - Upgrade';
- const tokenUpgradeSymbol = 'UPG';
- const marketplaceCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
- const marketplaceDevFeePercent = '100'; // 1%
- const saleCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
- const saleTokenUpgradeInitialPrice = '1000000000000000000'; // 1 XUSD / UPG
- const saleTokenUpgradeIncreaseEvery = '100000000000000000000'; // 100 UPG
- const saleTokenUpgradeMultiplier = '1000'; // 10%
- const saleTokenFactoryInitialPrice = '2000000000000000000'; // 2 XUSD / tokenUpgrade
- const saleTokenFactoryIncreaseEvery = '100000000000000000000'; // 100 UPG
- const saleTokenFactoryMultiplier = '100'; // 1%
- //var tokenProduct = await TokenProduct.at('');
- //var tokenFactory = await TokenFactory.at('');
- //var tokenUpgrade = await TokenUpgrade.at('');
- //var nft = await NFT.at('');
- //var marketplace = await Marketplace.at('');
+ var devFeeAddress = '0x650E5c6071f31065d7d5Bf6CaD5173819cA72c41';
+ var burnAddress = '0x000000000000000000000000000000000000dEaD';
+ var nftName = 'Animals.town';
+ var nftSymbol = 'ATOWN';
+ var nftDevFeePercent = '500'; // 5%
+ var tokenFactoryName = 'Animals.town - Love';
+ var tokenFactorySymbol = 'LOVE';
+ var tokenProductName = 'Animals.town - Gold';
+ var tokenProductSymbol = 'GOLD';
+ var tokenUpgradeName = 'Animals.town - Upgrade';
+ var tokenUpgradeSymbol = 'UPG';
+ var marketplaceCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
+ var marketplaceDevFeePercent = '100'; // 1%
+ var saleCurrencyAddress = '0xF42a4429F107bD120C5E42E069FDad0AC625F615'; // XUSD
+ var saleTokenUpgradeInitialPrice = '1000000000000000000'; // 1 XUSD / UPG
+ var saleTokenUpgradeIncreaseEvery = '100000000000000000000'; // 100 UPG
+ var saleTokenUpgradeMultiplier = '1000'; // 10%
+ var saleTokenFactoryInitialPrice = '2000000000000000000'; // 2 XUSD / tokenUpgrade
+ var saleTokenFactoryIncreaseEvery = '100000000000000000000'; // 100 UPG
+ var saleTokenFactoryMultiplier = '100'; // 1%
+ 
+ //var TokenProduct = await ethers.getContractFactory('TokenProduct');
+ //var tokenProduct = await TokenProduct.attach('');
+ //var TokenFactory = await ethers.getContractFactory('TokenFactory');
+ //var tokenFactory = await TokenFactory.attach('');
+ //var TokenUpgrade = await ethers.getContractFactory('TokenUpgrade');
+ //var tokenUpgrade = await TokenUpgrade.attach('');
+ //var NFT = await ethers.getContractFactory('NFT');
+ //var nft = await NFT.attach('');
+ //var Marketplace = await ethers.getContractFactory('Marketplace');
+ //var marketplace = await Marketplace.attach('');
  
  getWelcomeMessage('NFT');
  netInfo = await getNetworkInfo();
@@ -48,8 +54,7 @@ async function main() {
  var nft = await deploy('NFT', nftName, nftSymbol, nftDevFeePercent, devFeeAddress, burnAddress, marketplace.address, tokenFactory.address, tokenProduct.address, tokenUpgrade.address);
  createVerifyScript();
  getTotalCost();
- 
- /*
+
  // ADD COLLECTIONS AND PROPERTIES:
  // collectionAdd: name, factoryTime, tokenProductEmission, tokenUpgradePrice, tokenFactoryPrice
  var piggy = await collectionAdd(nft, 'Piggy', '604800', '1000000000000000', '1000000000000000000', '10000000000000000000');
@@ -65,7 +70,6 @@ async function main() {
  await collectionPropertyAdd(nft, duck, 'Eyes', '5');
  await collectionPropertyAdd(nft, duck, 'Beak', '5');
  await collectionPropertyAdd(nft, duck, 'Wings', '5');
- */
 
  // SETTINGS:
  await runFunction(marketplace, 'addAcceptedContract', nft.address);
@@ -74,35 +78,23 @@ async function main() {
  await runFunction(tokenFactory, 'transferOwnership', sale.address);
  await runFunction(sale, 'addToken', tokenFactory.address, saleTokenFactoryInitialPrice, saleTokenFactoryIncreaseEvery, saleTokenFactoryMultiplier);
  await runFunction(sale, 'addToken', tokenUpgrade.address, saleTokenUpgradeInitialPrice, saleTokenUpgradeIncreaseEvery, saleTokenUpgradeMultiplier); 
-
- /*
- await marketplace.addAcceptedContract(nft.address);
- await tokenProduct.transferOwnership(nft.address);
- await tokenUpgrade.transferOwnership(sale.address);
- await tokenFactory.transferOwnership(sale.address);
- await sale.addToken(tokenFactory.address, saleTokenFactoryInitialPrice, saleTokenFactoryIncreaseEvery, saleTokenFactoryMultiplier);
- await sale.addToken(tokenUpgrade.address, saleTokenUpgradeInitialPrice, saleTokenUpgradeIncreaseEvery, saleTokenUpgradeMultiplier);
- */
  
- // SALE - TEST
+/*
+ // TEST - SALE - APPROVE
  const maxint = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
- const XUSD = await ethers.getContractFactory('TokenProduct');
+ var XUSD = await ethers.getContractFactory('TokenProduct');
  var xusd = await XUSD.attach('0xF42a4429F107bD120C5E42E069FDad0AC625F615');
  await runFunction(xusd, 'approve', sale.address, maxint);
- //await xusd.approve(sale.address, maxint);
 
- // NFT - TEST
+ // TEST - TOKEN UPGRADE AND TOKEN FACTORY TO DEV WALLET
  await runFunction(tokenUpgrade, 'mint', '10000000000000000000000');
  await runFunction(tokenFactory, 'mint', '10000000000000000000000');
- /*
- tokenUpgrade.mint('10000000000000000000000'); // 10 000 UPG
- tokenFactory.mint('10000000000000000000000'); // 10 000 LOVE
- */
+*/
+
  // SUMMARY:
  getTotalCost();
  await getSummary();
 }
-
 
 async function getNetworkInfo() {
  var arr = [];
