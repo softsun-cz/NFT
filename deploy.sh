@@ -29,14 +29,8 @@ fi
 echo 'Deploying on:' $NETWORK '...'
 echo ''
 npx hardhat run --network $NETWORK $DEPLOY_SCRIPT 2>&1 | tee $LOG
-
-CONTRACTS=`node deploy-contracts.js`
-ARRAY=($CONTRACTS)
-for i in "${!ARRAY[@]}"
-do
- ADDRESS=${ARRAY[$i]}
- npx hardhat verify --network $NETWORK $ADDRESS | tee -a $LOG
-done
+./verify.sh $NETWORK
+rm -f ./verify.sh
 
 # sw=false
 # for i in "${!ARRAY[@]}"

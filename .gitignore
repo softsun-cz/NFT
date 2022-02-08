@@ -19,3 +19,4 @@ accounts.json
 yarn-error.log
 yarn.lock
 package-lock.json
+verify.sh

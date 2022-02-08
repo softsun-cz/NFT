@@ -1,5 +1,10 @@
 TODO:
 -----
+
+- hardhat - args kodu do .deploy()
+- hardhat verifikace kodu (vyzaduje args) - nekam hodit do souboru a pak spustit a samo se to pak smaze
+
+
 - Web - pridat stranku, kde je seznam karticek (NFT), co mam v penezence + moznost odeslat na jinou penezenku - zatim bez obrazku - jen cisla nosu, usi apod.
 - Web - pridat stranku pro Marketplace
 - Web - pridat stranku Token sale + seznam event (co kdo koupil) - pri evente zobrazit aktualni cenu a kolik tokenu se da koupit za tu cenu

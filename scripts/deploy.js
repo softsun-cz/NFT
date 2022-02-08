@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 var netInfo;
 var contracts = [];
 var totalCost = ethers.BigNumber.from('0');
+var verifyScript = '';
 const confirmNum = 3;
 
 async function main() {
@@ -41,10 +42,13 @@ async function main() {
  console.log();
  var sale = await deploy('Sale', saleCurrencyAddress);
  var tokenUpgrade = await deploy('TokenUpgrade', tokenUpgradeName, tokenUpgradeSymbol);
+ 
+/*
  var tokenFactory = await deploy('TokenFactory', tokenFactoryName, tokenFactorySymbol);
- var tokenProduct = await deploy('TokenProduct', tokenProductName, tokenProductSymbol);
+var tokenProduct = await deploy('TokenProduct', tokenProductName, tokenProductSymbol);
  var marketplace = await deploy('Marketplace', marketplaceCurrencyAddress, marketplaceDevFeePercent);
  var nft = await deploy('NFT', nftName, nftSymbol, nftDevFeePercent, devFeeAddress, burnAddress, marketplace.address, tokenFactory.address, tokenProduct.address, tokenUpgrade.address);
+ createVerifyScript();
  getTotalCost();
 
 // SETTINGS:
@@ -78,6 +82,15 @@ await propertyAdd(nft, duck, 'Beak');
 await propertyAdd(nft, duck, 'Wings');
 getTotalCost();
 await getSummary();
+*/
+}
+
+function createVerifyScript() {
+ const fs = require('fs');
+ var verifyFile = './verify.sh';
+ if (fs.existsSync(verifyFile)) fs.unlinkSync(verifyFile);
+ fs.writeFileSync(verifyFile, '#!/bin/sh' + "\n\n" + verifyScript);
+ fs.chmodSync(verifyFile, 0o755);
 }
 
 async function getNetworkInfo() {
@@ -135,13 +148,15 @@ async function deploy() {
   console.log();
   return;
  }
- const dash = '-'.repeat(arguments[0].length + 10);
+ var params = [];
+ if (arguments.length > 1) for (var i = 1; i < arguments.length; i++) params.push(arguments[i]);
+  const dash = '-'.repeat(arguments[0].length + 10);
  console.log(dash);
  console.log('Contract: ' + arguments[0]);
  console.log(dash);
  console.log();
- const Contract = await ethers.getContractFactory(...arguments);
- const contract = await Contract.deploy();
+ const Contract = await ethers.getContractFactory(arguments[0]);
+ const contract = await Contract.deploy(...params);
  console.log('Contract TX ID:   ' + contract.deployTransaction.hash);
  console.log('Contract address: ' + contract.address);
  var balance = ethers.utils.formatEther(await (await ethers.getSigners())[0].getBalance()) + ' ' + netInfo['symbol'];
@@ -173,6 +188,9 @@ async function deploy() {
   lastConfirmation = confirmations;
  }
  console.log();
+ verifyScript += 'npx hardhat verify --network $1 --contract contracts/' + arguments[0] + '.sol:' + arguments[0] + ' ' + contract.address;
+ if (arguments.length > 1) for (var i = 1; i < arguments.length; i++) verifyScript += ' "' + arguments[i] + '"';
+ verifyScript += "\n";
  return result;
 }
 
