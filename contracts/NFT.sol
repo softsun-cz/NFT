@@ -145,7 +145,7 @@ contract NFT is ERC721MintMore, Ownable {
         require(getCharMatch(_name), 'mint: Name can contain only a-z, A-Z, 0-9, space and dot');
         _safeMint(_recipient, nftCount);
         mintAddDetails(_collectionID, _name);
-        nftCount++;
+        
         return nftCount - 1;
     }
 
@@ -156,7 +156,6 @@ contract NFT is ERC721MintMore, Ownable {
         require(getCharMatch(_name), 'mintMore: Name can contain only a-z, A-Z, 0-9, space and dot');
         _mintMore(_recipient, nftCount, _count);
         for (uint i = 0; i < _count; i++) mintAddDetails(_collectionID, string(abi.encodePacked(_name, ' ', Strings.toString(i))));
-        nftCount += _count;
         return nftCount - 1;
     }
 
@@ -178,6 +177,7 @@ contract NFT is ERC721MintMore, Ownable {
         }
         nfts[nftCount].createdTime = block.timestamp;
         collections[_collectionID].nftCount++;
+        nftCount++;
     }
 
     function factory(uint _nftMaleID, uint _nftFemaleID, string memory _name) public {
