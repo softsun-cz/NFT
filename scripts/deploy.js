@@ -51,18 +51,20 @@ async function main() {
  getTotalCost();
  
  // ADD COLLECTIONS AND PROPERTIES:
- var piggy = await collectionAdd(nft, 'Piggy');
- var duck = await collectionAdd(nft, 'Duck');
- await propertyAdd(nft, piggy, 'Body');
- await propertyAdd(nft, piggy, 'Ears');
- await propertyAdd(nft, piggy, 'Eyes');
- await propertyAdd(nft, piggy, 'Snout');
- await propertyAdd(nft, piggy, 'Mouth');
- await propertyAdd(nft, piggy, 'Tail');
- await propertyAdd(nft, duck, 'Body');
- await propertyAdd(nft, duck, 'Eyes');
- await propertyAdd(nft, duck, 'Beak');
- await propertyAdd(nft, duck, 'Wings');
+ // collectionAdd: name, factoryTime, tokenProductEmission, tokenUpgradePrice, tokenFactoryPrice
+ var piggy = await collectionAdd(nft, 'Piggy', '604800', '1000000000000000', '10000000000000000000');
+ var duck = await collectionAdd(nft, 'Duck', '604800', '100000000000000', '5000000000000000000');
+ // collectionPropertyAdd: collectionID, name, basicCount
+ await collectionPropertyAdd(nft, piggy, 'Body', '3');
+ await collectionPropertyAdd(nft, piggy, 'Ears', '5');
+ await collectionPropertyAdd(nft, piggy, 'Eyes', '5');
+ await collectionPropertyAdd(nft, piggy, 'Snout', '5');
+ await collectionPropertyAdd(nft, piggy, 'Mouth', '5');
+ await collectionPropertyAdd(nft, piggy, 'Tail', '5');
+ await collectionPropertyAdd(nft, duck, 'Body', '3');
+ await collectionPropertyAdd(nft, duck, 'Eyes', '5');
+ await collectionPropertyAdd(nft, duck, 'Beak', '5');
+ await collectionPropertyAdd(nft, duck, 'Wings', '5');
  
  // SETTINGS:
  await runFunction(marketplace, 'addAcceptedContract', nft.address);
@@ -249,15 +251,15 @@ async function runFunction() {
  console.log();
 }
 
-async function collectionAdd(contract, name) {
+async function collectionAdd(contract, name, factoryTime, tokenProductEmission, tokenUpgradePrice, tokenFactoryPrice) {
  console.log('Adding collection: \"' + name + '\"');
- await runFunction(contract, 'collectionAdd', name);
+ await runFunction(contract, 'collectionAdd', name, factoryTime, tokenProductEmission, tokenUpgradePrice, tokenFactoryPrice);
  return (await contract.collectionsCount() - 1).toString();
 }
 
-async function propertyAdd(contract, collection, name) {
- console.log('Adding property: \"' + name + '\" to collection ID: ' + collection);
- await runFunction(contract, 'propertyAdd', collection, name);
+async function collectionPropertyAdd(contract, collectionID, name, basicCount) {
+ console.log('Adding property: \"' + name + '\" to collection ID: ' + collectionID);
+ await runFunction(contract, 'propertyAdd', collectionID, name, basicCount);
 }
 
 main()
