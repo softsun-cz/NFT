@@ -45,7 +45,7 @@ async function main() {
  var tokenFactory = await deploy('TokenFactory', tokenFactoryName, tokenFactorySymbol);
  var tokenProduct = await deploy('TokenProduct', tokenProductName, tokenProductSymbol);
  var marketplace = await deploy('Marketplace', marketplaceCurrencyAddress, marketplaceDevFeePercent);
- var nft = await deploy('NFT', nftName, nftSymbol, nftDevFeePercent, devFeeAddress, burnAddress, marketplace.address, tokenFactory.address, tokenProduct.address, tokenUpgrade.address);
+ //var nft = await deploy('NFT', nftName, nftSymbol, nftDevFeePercent, devFeeAddress, burnAddress, marketplace.address, tokenFactory.address, tokenProduct.address, tokenUpgrade.address);
  createVerifyScript();
  getTotalCost();
  /*
@@ -81,14 +81,6 @@ async function main() {
  getTotalCost();
  */
  await getSummary();
-}
-
-function createVerifyScript() {
- const fs = require('fs');
- var verifyFile = './verify.sh';
- if (fs.existsSync(verifyFile)) fs.unlinkSync(verifyFile);
- fs.writeFileSync(verifyFile, '#!/bin/sh' + "\n\n" + verifyScript);
- fs.chmodSync(verifyFile, 0o755);
 }
 
 async function getNetworkInfo() {
@@ -201,14 +193,20 @@ function getTotalCost() {
  console.log();
 }
 
+function createVerifyScript() {
+ const fs = require('fs');
+ var verifyFile = './verify.sh';
+ if (fs.existsSync(verifyFile)) fs.unlinkSync(verifyFile);
+ fs.writeFileSync(verifyFile, '#!/bin/sh' + "\n\n" + verifyScript);
+ fs.chmodSync(verifyFile, 0o755);
+}
+
 async function getSummary() {
  console.log('===================');
  console.log('Deployed contracts:');
  console.log('===================');
  console.log();
- for (var i = 0; i < contracts.length; i++) {
-  console.log(contracts[i]['name'] + ': ' + netInfo['explorer'] + '/address/' + contracts[i]['address']);
- }
+ for (var i = 0; i < contracts.length; i++) console.log(contracts[i]['name'] + ': ' + netInfo['explorer'] + '/address/' + contracts[i]['address']);
  console.log();
  console.log('End time: ' + new Date(Date.now()).toLocaleString());
  console.log();
