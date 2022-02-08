@@ -33,7 +33,6 @@ async function main() {
  //var tokenUpgrade = await TokenUpgrade.at('');
  //var nft = await NFT.at('');
  //var marketplace = await Marketplace.at('');
-
  
  getWelcomeMessage('NFT');
  netInfo = await getNetworkInfo();
@@ -50,6 +49,7 @@ async function main() {
  createVerifyScript();
  getTotalCost();
  
+ /*
  // ADD COLLECTIONS AND PROPERTIES:
  // collectionAdd: name, factoryTime, tokenProductEmission, tokenUpgradePrice, tokenFactoryPrice
  var piggy = await collectionAdd(nft, 'Piggy', '604800', '1000000000000000', '1000000000000000000', '10000000000000000000');
@@ -65,15 +65,16 @@ async function main() {
  await collectionPropertyAdd(nft, duck, 'Eyes', '5');
  await collectionPropertyAdd(nft, duck, 'Beak', '5');
  await collectionPropertyAdd(nft, duck, 'Wings', '5');
- 
+ */
+
  // SETTINGS:
  await runFunction(marketplace, 'addAcceptedContract', nft.address);
  await runFunction(tokenProduct, 'transferOwnership', nft.address);
  await runFunction(tokenUpgrade, 'transferOwnership', sale.address);
  await runFunction(tokenFactory, 'transferOwnership', sale.address);
- await runFunction(sale, 'addToken', saleTokenFactoryInitialPrice, saleTokenFactoryIncreaseEvery, saleTokenFactoryMultiplier);
- await runFunction(sale, 'addToken', saleTokenUpgradeInitialPrice, saleTokenUpgradeIncreaseEvery, saleTokenUpgradeMultiplier);
- 
+ await runFunction(sale, 'addToken', tokenFactory.address, saleTokenFactoryInitialPrice, saleTokenFactoryIncreaseEvery, saleTokenFactoryMultiplier);
+ await runFunction(sale, 'addToken', tokenUpgrade.address, saleTokenUpgradeInitialPrice, saleTokenUpgradeIncreaseEvery, saleTokenUpgradeMultiplier); 
+
  /*
  await marketplace.addAcceptedContract(nft.address);
  await tokenProduct.transferOwnership(nft.address);
