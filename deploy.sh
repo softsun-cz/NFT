@@ -1,7 +1,7 @@
 #!/bin/bash
 
 LOG=deploy.log
-DEPLOY_SCRIPT=scripts/deploy.js;
+DEPLOY_SCRIPT=scripts/deploy.js
 NETWORKS=`node deploy-networks.js`
 echo ''
 echo '---------------------------'
