@@ -13,5 +13,5 @@
     "ethereum-waffle": "*",
     "ethers": "*",
     "hardhat": "*"
-  },
+  }
 }
