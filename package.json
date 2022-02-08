@@ -6,6 +6,7 @@
     "node-fetch": "^2"
   },
   "devDependencies": {
+    "@openzeppelin/contracts": "*",
     "@nomiclabs/hardhat-ethers": "*",
     "@nomiclabs/hardhat-etherscan": "*",
     "@nomiclabs/hardhat-waffle": "*",
