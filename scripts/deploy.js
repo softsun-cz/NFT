@@ -5,7 +5,7 @@ var netInfo;
 var contracts = [];
 var totalCost = ethers.BigNumber.from('0');
 var verifyScript = '';
-const confirmNum = 3;
+const confirmNum = 1;
 
 async function main() {
  const devFeeAddress = '0x650E5c6071f31065d7d5Bf6CaD5173819cA72c41';
@@ -34,14 +34,14 @@ async function main() {
  //var nft = await NFT.at('');
  //var marketplace = await Marketplace.at('');
 
- /* 
+ 
  getWelcomeMessage('NFT');
  netInfo = await getNetworkInfo();
  getNetworkMessage();
  console.log();
  console.log('Deploying smart contracts ...');
  console.log();
- //var sale = await deploy('Sale', saleCurrencyAddress);
+ var sale = await deploy('Sale', saleCurrencyAddress);
  var tokenUpgrade = await deploy('TokenUpgrade', tokenUpgradeName, tokenUpgradeSymbol);
  var tokenFactory = await deploy('TokenFactory', tokenFactoryName, tokenFactorySymbol);
  var tokenProduct = await deploy('TokenProduct', tokenProductName, tokenProductSymbol);
@@ -64,34 +64,40 @@ async function main() {
  await propertyAdd(nft, duck, 'Beak');
  await propertyAdd(nft, duck, 'Wings');
  
- /*
  // SETTINGS:
+ await runFunction(marketplace, 'addAcceptedContract', nft.address);
+ await runFunction(tokenProduct, 'transferOwnership', nft.address);
+ await runFunction(tokenUpgrade, 'transferOwnership', sale.address);
+ await runFunction(tokenFactory, 'transferOwnership', sale.address);
+ await runFunction(sale, 'addToken', saleTokenFactoryInitialPrice, saleTokenFactoryIncreaseEvery, saleTokenFactoryMultiplier);
+ await runFunction(sale, 'addToken', saleTokenUpgradeInitialPrice, saleTokenUpgradeIncreaseEvery, saleTokenUpgradeMultiplier);
+ 
+ /*
  await marketplace.addAcceptedContract(nft.address);
  await tokenProduct.transferOwnership(nft.address);
  await tokenUpgrade.transferOwnership(sale.address);
  await tokenFactory.transferOwnership(sale.address);
  await sale.addToken(tokenFactory.address, saleTokenFactoryInitialPrice, saleTokenFactoryIncreaseEvery, saleTokenFactoryMultiplier);
  await sale.addToken(tokenUpgrade.address, saleTokenUpgradeInitialPrice, saleTokenUpgradeIncreaseEvery, saleTokenUpgradeMultiplier);
-
+ */
+ 
  // SALE - TEST
  const maxint = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
- var xusd = await TokenProduct.at('0xF42a4429F107bD120C5E42E069FDad0AC625F615');
- await xusd.approve(sale.address, maxint);
+ const XUSD = await ethers.getContractFactory('TokenProduct');
+ var xusd = await XUSD.attach('0xF42a4429F107bD120C5E42E069FDad0AC625F615');
+ await runFunction(xusd, 'approve', sale.address, maxint);
+ //await xusd.approve(sale.address, maxint);
 
  // NFT - TEST
+ await runFunction(tokenUpgrade, 'mint', '10000000000000000000000');
+ await runFunction(tokenFactory, 'mint', '10000000000000000000000');
+ /*
  tokenUpgrade.mint('10000000000000000000000'); // 10 000 UPG
  tokenFactory.mint('10000000000000000000000'); // 10 000 LOVE
-
+ */
+ // SUMMARY:
  getTotalCost();
  await getSummary();
- */
-
-await ownFunction('console.log', 'test 123');
-
-}
-
-async function ownFunction(name, params) {
- return await ['name'](params);
 }
 
 
@@ -224,31 +230,34 @@ async function getSummary() {
  console.log();
 }
 
-async function collectionAdd(contract, name) {
- console.log('Adding collection: \"' + name + '\"');
- var col = await contract.collectionAdd(name);
+async function runFunction() {
+ if (arguments.length < 2) {
+  console.log('Error: Missing parameters');
+  console.log();
+  return;
+ }
+ var params = [];
+ if (arguments.length > 2) for (var i = 2; i < arguments.length; i++) params.push(arguments[i]);
+ var res = await arguments[0][arguments[1]](...params);
  console.log('Waiting for 1 confirmation...');
- await col.wait(1);
+ await res.wait(1);
  console.log('Done.');
- var receipt = await ethers.provider.getTransactionReceipt(col.hash);
- var cost = col.gasPrice.mul(receipt.gasUsed);
+ var receipt = await ethers.provider.getTransactionReceipt(res.hash);
+ var cost = res.gasPrice.mul(receipt.gasUsed);
  console.log('Transaction cost: ' + ethers.utils.formatEther(cost.toString()) + ' ' + netInfo['symbol']);
  totalCost = totalCost.add(cost);
  console.log();
+}
+
+async function collectionAdd(contract, name) {
+ console.log('Adding collection: \"' + name + '\"');
+ await runFunction(contract, 'collectionAdd', name);
  return (await contract.collectionsCount() - 1).toString();
 }
 
 async function propertyAdd(contract, collection, name) {
  console.log('Adding property: \"' + name + '\" to collection ID: ' + collection);
- var property = await contract.propertyAdd(collection, name);
- console.log('Waiting for 1 confirmation...');
- await property.wait(1);
- console.log('Done.');
- var receipt = await ethers.provider.getTransactionReceipt(property.hash);
- var cost = property.gasPrice.mul(receipt.gasUsed);
- console.log('Transaction cost: ' + ethers.utils.formatEther(cost.toString()) + ' ' + netInfo['symbol']);
- totalCost = totalCost.add(cost);
- console.log();
+ await runFunction(contract, 'propertyAdd', collection, name);
 }
 
 main()
