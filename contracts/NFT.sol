@@ -156,6 +156,7 @@ contract NFT is ERC721MintMore, Ownable {
         require(getCharMatch(_name), 'mintMore: Name can contain only a-z, A-Z, 0-9, space and dot');
         _mintMore(_recipient, nftCount, _count);
         for (uint i = 0; i < _count; i++) mintAddDetails(_collectionID, string(abi.encodePacked(_name, ' ', Strings.toString(i))));
+        nftCount += _count;
         return nftCount - 1;
     }
 
