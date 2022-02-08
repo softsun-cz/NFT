@@ -194,16 +194,16 @@ contract NFT is ERC721MintMore, Ownable {
         emit eventFactory(_nftMaleID, _nftFemaleID, newID);
     }
 
-    function getCollectionProperty(uint _collectionID, uint _propertyID) view public returns (Property memory) {
-        require(collections[_collectionID].exists, 'getCollectionProperty: Wrong collection ID');
-        require(_propertyID < collections[_collectionID].properties.length, 'getCollectionProperty: Wrong property ID');
-        return collections[_collectionID].properties[_propertyID];
-    }
-
     function getNFTProperty(uint _nftID, uint _propertyID) view public returns (uint) {
         require(nfts[_nftID].exists, 'getNFTProperty: Wrong NFT ID');
         require(_propertyID < collections[nfts[_nftID].collectionID].properties.length, 'getNFTProperty: Wrong property ID');
         return nfts[_nftID].properties[_propertyID];
+    }
+
+    function getCollectionProperty(uint _collectionID, uint _propertyID) view public returns (Property memory) {
+        require(collections[_collectionID].exists, 'getCollectionProperty: Wrong collection ID');
+        require(_propertyID < collections[_collectionID].properties.length, 'getCollectionProperty: Wrong property ID');
+        return collections[_collectionID].properties[_propertyID];
     }
 
     function collectionAdd(string memory _name, uint _factoryTime, uint _tokenProductEmission, uint _tokenUpgradePrice, uint _tokenFactoryPrice) public onlyOwner returns (uint) {

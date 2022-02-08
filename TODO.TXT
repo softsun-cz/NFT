@@ -11,6 +11,8 @@ TODO:
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - Marketplace - nastavit, aby pouzival funkci nft.transfer (ktera harvestne tokeny puvodnimu majiteli)
+- NFT - getNFTProperty vraci pri spravne zadanem NFT a Property ID error
+- NFT - nftMintMore nefunguje
 - NFT - nftLevelUpgrade() - otestovat, jestli to hodi chybu, kdyz nemam dostatek tokenu, pokud to projde s nizsi castkou, tak tam pridat require
 - NFT - pridat rodice NFT (pokud jsou)
 - NFT - pridat zmenu vzhledu (upgradeToken - pridat cenu zmeny vzhledu do kolekce)
