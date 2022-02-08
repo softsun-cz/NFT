@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
-    "@openzeppelin/contracts": "*",
-    "@openzeppelin/contracts-upgradeable": "*",
-    "@openzeppelin/test-helpers": "*",
-    "@openzeppelin/truffle-upgrades": "*",
-    "@truffle/hdwallet-provider": "*",
-    "truffle-contract-size": "*",
-    "truffle-plugin-verify": "*"
-  }
+    "node-fetch": "^2"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "*",
+    "@nomiclabs/hardhat-etherscan": "*",
+    "@nomiclabs/hardhat-waffle": "*",
+    "chai": "*",
+    "ethereum-waffle": "*",
+    "ethers": "*",
+    "hardhat": "*"
+  },
 }

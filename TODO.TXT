@@ -10,7 +10,7 @@ TODO:
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - Marketplace - nastavit, aby pouzival funkci nft.transfer (ktera harvestne tokeny puvodnimu majiteli)
-- NFT - v samostatnem projektu Sample - v deploy scriptu nesel nacist uint do stringu
+- NFT - v samostatnem projektu Sample: /root/TEST - v deploy scriptu nesel nacist uint do stringu
 - NFT - mintToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - NFT - pridat zmenu vzhledu (upgradeToken - pridat cenu zmeny vzhledu do kolekce)
 - NFT - LevelUpgrade() - otestovat, jestli to hodi chybu, kdyz nemam dostatek tokenu, pokud to projde s nizsi castkou, tak tam pridat require
@@ -18,7 +18,15 @@ TODO:
 - NFT - pridat moznost properties, ktere nejsou basic
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
 - NFT - ERC721MintMore - zmensit a udelat z nej library nebo abstract contract nebo neco takoveho - pokus je v /root/ZALOHA
+- V truffle configu je dole optimizer s "runs"... zjistit, jestli to runs necemu nevadi - psali tam, ze je to pocet pouziti contractu - NFT contract byl prilis velky bez optimizeru
 - Vytvorit multiDev contract (vlastni projekt) - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri
+
+Console test:
+-------------
+truffle console --network polygonTestnet
+var x = await Sample.at('0x7B46FdBe85FBF1453795531839263D1B63C40D9B');
+var y = await x.collectionAdd.call('koko');
+var z = await y.toNumber();
 
 Contracty:
 ----------

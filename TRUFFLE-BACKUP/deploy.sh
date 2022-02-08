@@ -1,7 +1,7 @@
 #!/bin/bash
 
+BUILD=build/
 LOG=deploy.log
-DEPLOY_SCRIPT=scripts/deploy.js;
 NETWORKS=`node deploy-networks.js`
 echo ''
 echo '---------------------------'
@@ -28,15 +28,26 @@ if [ "$NETWORK" = '' ] || [ "$((NET - 1))" = -1 ]; then
 fi
 echo 'Deploying on:' $NETWORK '...'
 echo ''
-npx hardhat run --network $NETWORK $DEPLOY_SCRIPT 2>&1 | tee $LOG
+if [ -d "$BUILD" ]; then
+ echo "Removing old builds ..."
+ rm -r $BUILD
+fi
+truffle deploy --network $NETWORK 2>&1 | tee $LOG
 
 CONTRACTS=`node deploy-contracts.js`
 ARRAY=($CONTRACTS)
+sw=false
 for i in "${!ARRAY[@]}"
 do
- ADDRESS=${ARRAY[$i]}
- npx hardhat verify --network $NETWORK $ADDRESS | tee -a $LOG
+ if [ $sw = false ]; then
+  NAME=${ARRAY[$i]}
+  VERIFY="$VERIFY $NAME"
+  sw=true
+ else
+  sw=false
+ fi
 done
+truffle run verify $VERIFY --network $NETWORK | tee -a $LOG
 
 # sw=false
 # for i in "${!ARRAY[@]}"
