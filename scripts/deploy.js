@@ -33,7 +33,8 @@ async function main() {
  //var tokenUpgrade = await TokenUpgrade.at('');
  //var nft = await NFT.at('');
  //var marketplace = await Marketplace.at('');
- 
+
+ /* 
  getWelcomeMessage('NFT');
  netInfo = await getNetworkInfo();
  getNetworkMessage();
@@ -82,9 +83,17 @@ async function main() {
  tokenFactory.mint('10000000000000000000000'); // 10 000 LOVE
 
  getTotalCost();
- */
  await getSummary();
+ */
+
+await ownFunction('console.log', 'test 123');
+
 }
+
+async function ownFunction(name, params) {
+ return await ['name'](params);
+}
+
 
 async function getNetworkInfo() {
  var arr = [];
