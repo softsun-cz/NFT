@@ -40,14 +40,29 @@ async function main() {
  console.log();
  console.log('Deploying smart contracts ...');
  console.log();
- var sale = await deploy('Sale', saleCurrencyAddress);
+ //var sale = await deploy('Sale', saleCurrencyAddress);
  var tokenUpgrade = await deploy('TokenUpgrade', tokenUpgradeName, tokenUpgradeSymbol);
  var tokenFactory = await deploy('TokenFactory', tokenFactoryName, tokenFactorySymbol);
  var tokenProduct = await deploy('TokenProduct', tokenProductName, tokenProductSymbol);
  var marketplace = await deploy('Marketplace', marketplaceCurrencyAddress, marketplaceDevFeePercent);
- //var nft = await deploy('NFT', nftName, nftSymbol, nftDevFeePercent, devFeeAddress, burnAddress, marketplace.address, tokenFactory.address, tokenProduct.address, tokenUpgrade.address);
+ var nft = await deploy('NFT', nftName, nftSymbol, nftDevFeePercent, devFeeAddress, burnAddress, marketplace.address, tokenFactory.address, tokenProduct.address, tokenUpgrade.address);
  createVerifyScript();
  getTotalCost();
+ 
+ // ADD COLLECTIONS AND PROPERTIES:
+ var piggy = await collectionAdd(nft, 'Piggy');
+ var duck = await collectionAdd(nft, 'Duck');
+ await propertyAdd(nft, piggy, 'Body');
+ await propertyAdd(nft, piggy, 'Ears');
+ await propertyAdd(nft, piggy, 'Eyes');
+ await propertyAdd(nft, piggy, 'Snout');
+ await propertyAdd(nft, piggy, 'Mouth');
+ await propertyAdd(nft, piggy, 'Tail');
+ await propertyAdd(nft, duck, 'Body');
+ await propertyAdd(nft, duck, 'Eyes');
+ await propertyAdd(nft, duck, 'Beak');
+ await propertyAdd(nft, duck, 'Wings');
+ 
  /*
  // SETTINGS:
  await marketplace.addAcceptedContract(nft.address);
@@ -66,18 +81,6 @@ async function main() {
  tokenUpgrade.mint('10000000000000000000000'); // 10 000 UPG
  tokenFactory.mint('10000000000000000000000'); // 10 000 LOVE
 
- var piggy = await collectionAdd(nft, 'Piggy');
- var duck = await collectionAdd(nft, 'Duck');
- await propertyAdd(nft, piggy, 'Body');
- await propertyAdd(nft, piggy, 'Ears');
- await propertyAdd(nft, piggy, 'Eyes');
- await propertyAdd(nft, piggy, 'Snout');
- await propertyAdd(nft, piggy, 'Mouth');
- await propertyAdd(nft, piggy, 'Tail');
- await propertyAdd(nft, duck, 'Body');
- await propertyAdd(nft, duck, 'Eyes');
- await propertyAdd(nft, duck, 'Beak');
- await propertyAdd(nft, duck, 'Wings');
  getTotalCost();
  */
  await getSummary();
