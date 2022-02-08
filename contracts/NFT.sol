@@ -8,7 +8,7 @@ import './libs/SafeERC20Mint.sol';
 import './Marketplace.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
-contract NFT is ERC721MintMore, Ownable { //, CollectionManager
+contract NFT is ERC721MintMore, Ownable {
     using SafeERC20Mint for IERC20Mint;
     IERC20Mint public tokenProduct;
     IERC20Mint public tokenUpgrade;
@@ -114,6 +114,7 @@ contract NFT is ERC721MintMore, Ownable { //, CollectionManager
         require(ownerOf(_nftID) == msg.sender, 'levelUpgrade: You are not the owner of this NFT');
         uint amount = _levels * collections[nfts[_nftID].collectionID].tokenUpgradePrice;
         require(tokenUpgrade.allowance(msg.sender, address(this)) >= amount, 'levelUpgrade: Token Upgrade allowance is too low');
+        //require(tokenUpgrade.balanceOf(msg.sender) >= amount, 'levelUpgrade: Not enough Token Upgrade in your wallet');
         tokenUpgrade.safeTransferFrom(msg.sender, address(this), amount);
         tokenUpgrade.safeTransfer(devFeeAddress, amount * devFeePercent / 10000);
         tokenUpgrade.safeTransfer(burnAddress, amount * (10000 - devFeePercent) / 10000);
@@ -144,6 +145,7 @@ contract NFT is ERC721MintMore, Ownable { //, CollectionManager
         require(getCharMatch(_name), 'mint: Name can contain only a-z, A-Z, 0-9, space and dot');
         _safeMint(_recipient, nftCount);
         mintAddDetails(_collectionID, _name);
+        nftCount++;
         return nftCount - 1;
     }
 
@@ -158,19 +160,23 @@ contract NFT is ERC721MintMore, Ownable { //, CollectionManager
     }
 
     function mintMoreToMarketplace(uint _collectionID, string memory _name, uint _price, uint _count) public onlyOwner {
-        uint startID = nftCount - 1;
+        uint startID = nftCount;
         mintMore(address(this), _collectionID, _name, _count);
         for (uint i = 0; i < _count; i++) marketplace.deposit(address(this), startID + i, _price);
     }
 
     function mintAddDetails(uint _collectionID, string memory _name) private onlyOwner {
-        uint[] memory prop;
-        for (uint i = 0; i < collections[_collectionID].properties.length; i++) {
-            prop[i] = getRandomNumber(collections[_collectionID].properties[i].basicCount);
+        nfts[nftCount].exists = true;
+        nfts[nftCount].sex = getRandomNumber(2) == 1 ? true : false;
+        nfts[nftCount].name = _name;
+        nfts[nftCount].collectionID = _collectionID;
+        nfts[nftCount].level = 1;
+        nfts[nftCount].lastEmissionBlock = block.number;
+        for (uint i = 0; i < collections[_collectionID].properties.length - 1; i++) {
+            nfts[nftCount].properties[i] = getRandomNumber(collections[_collectionID].properties[i].basicCount);
         }
-        nfts[nftCount] = NFTDetails(true, getRandomNumber(2) == 1 ? true : false, _name, _collectionID, 1, block.number, prop, block.timestamp);
+        nfts[nftCount].createdTime = block.timestamp;
         collections[_collectionID].nftCount++;
-        nftCount++;
     }
 
     function factory(uint _nftMaleID, uint _nftFemaleID, string memory _name) public {
@@ -186,6 +192,18 @@ contract NFT is ERC721MintMore, Ownable { //, CollectionManager
         tokenFactory.safeTransfer(burnAddress, collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice * (10000 - devFeePercent) / 10000);
         uint newID = mint(msg.sender, nfts[_nftMaleID].collectionID, _name);
         emit eventFactory(_nftMaleID, _nftFemaleID, newID);
+    }
+
+    function getCollectionProperty(uint _collectionID, uint _propertyID) view public returns (Property memory) {
+        require(collections[_collectionID].exists, 'getCollectionProperty: Wrong collection ID');
+        require(_propertyID < collections[_collectionID].properties.length, 'getCollectionProperty: Wrong property ID');
+        return collections[_collectionID].properties[_propertyID];
+    }
+
+    function getNFTProperty(uint _nftID, uint _propertyID) view public returns (uint) {
+        require(nfts[_nftID].exists, 'getNFTProperty: Wrong NFT ID');
+        require(_propertyID < collections[nfts[_nftID].collectionID].properties.length, 'getNFTProperty: Wrong property ID');
+        return nfts[_nftID].properties[_propertyID];
     }
 
     function collectionAdd(string memory _name, uint _factoryTime, uint _tokenProductEmission, uint _tokenUpgradePrice, uint _tokenFactoryPrice) public onlyOwner returns (uint) {
@@ -257,14 +275,14 @@ contract NFT is ERC721MintMore, Ownable { //, CollectionManager
 
     function collectionPropertyRename(uint _collectionID, uint _propertyID, string memory _name) public onlyOwner {
         require(collections[_collectionID].exists, 'collectionPropertyRename: Wrong collection ID');
-        require(_propertyID <= collections[_collectionID].properties.length, 'collectionPropertyRename: Wrong property ID');
+        require(_propertyID < collections[_collectionID].properties.length, 'collectionPropertyRename: Wrong property ID');
         collections[_propertyID].name = _name;
         emit eventCollectionPropertyRename(_collectionID, _propertyID, _name);
     }
 
     function collectionPropertySetBasicCount(uint _collectionID, uint _propertyID, uint _basicCount) public onlyOwner {
         require(collections[_collectionID].exists, 'collectionPropertySetBasicCount: Wrong collection ID');
-        require(_propertyID <= collections[_collectionID].properties.length, 'collectionPropertySetBasicCount: Wrong property ID');
+        require(_propertyID < collections[_collectionID].properties.length, 'collectionPropertySetBasicCount: Wrong property ID');
         require(collections[_collectionID].nftCount == 0, 'collectionPropertySetBasicCount: Cannot remove property, because it was already used in collection that has NFTs.');
         collections[_collectionID].properties[_propertyID].basicCount = _basicCount;
         emit eventCollectionPropertySetBasicCount(_collectionID, _propertyID, _basicCount);
@@ -272,7 +290,7 @@ contract NFT is ERC721MintMore, Ownable { //, CollectionManager
 
     function collectionPropertyRemove(uint _collectionID, uint _propertyID) public onlyOwner {
         require(collections[_collectionID].exists, 'collectionPropertyRemove: Wrong collection ID');
-        require(_propertyID <= collections[_collectionID].properties.length, 'collectionPropertyRemove: Wrong property ID');
+        require(_propertyID < collections[_collectionID].properties.length, 'collectionPropertyRemove: Wrong property ID');
         require(collections[_collectionID].nftCount == 0, 'collectionPropertyRemove: Cannot remove property, because it was already used in collection that has NFTs.');
         delete collections[_collectionID].properties[_propertyID];
         emit eventCollectionPropertyRemove(_collectionID, _propertyID);
