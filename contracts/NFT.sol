@@ -93,6 +93,7 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function nftRename(uint _nftID, string memory _name) public {
+        require(nfts[_nftID].exists, 'nftRename: Wrong NFT ID');
         require(ownerOf(_nftID) == msg.sender, 'nftRename: You are not the owner of this NFT');
         require(getUTFStrLen(_name) <= 16, 'nftRename: Name is too long. Maximum: 16 characters');
         require(getCharMatch(_name), 'nftRename: Name can contain only a-z, A-Z, 0-9, space and dot');
@@ -111,10 +112,10 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function nftLevelUpgrade(uint _nftID, uint _levels) public {
-        require(ownerOf(_nftID) == msg.sender, 'levelUpgrade: You are not the owner of this NFT');
+        require(nfts[_nftID].exists, 'nftLevelUpgrade: Wrong NFT ID');
         uint amount = _levels * collections[nfts[_nftID].collectionID].tokenUpgradePrice;
-        require(tokenUpgrade.allowance(msg.sender, address(this)) >= amount, 'levelUpgrade: Token Upgrade allowance is too low');
-        //require(tokenUpgrade.balanceOf(msg.sender) >= amount, 'levelUpgrade: Not enough Token Upgrade in your wallet');
+        require(tokenUpgrade.allowance(msg.sender, address(this)) >= amount, 'nftLevelUpgrade: Token Upgrade allowance is too low');
+        require(tokenUpgrade.balanceOf(msg.sender) >= amount, 'nftLevelUpgrade: Not enough Token Upgrade in your wallet');
         tokenUpgrade.safeTransferFrom(msg.sender, address(this), amount);
         tokenUpgrade.safeTransfer(devFeeAddress, amount * devFeePercent / 10000);
         tokenUpgrade.safeTransfer(burnAddress, amount * (10000 - devFeePercent) / 10000);

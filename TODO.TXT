@@ -7,6 +7,7 @@ TODO:
 - Web - pridat vyhledavani podle ID + pridat adresu ownera
 - Web - pridat stranku Breeding (Factory)
 - Web - pridat stranku Staking
+- Web - pri upgradovani cizich NFTcek zobrazit upozorneni, ze to neni vlastni NFT
 - Web - pridat stranku Statistics - zde budou statistiky ke vsem contractum - info o NFT, Token Factory, Token Product, Token Upgrade, Sale, Marketplace, Factory
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
