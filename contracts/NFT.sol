@@ -134,7 +134,7 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function getTokenProductToHarvest(uint _nftID) public view returns(uint) {
-        return (block.number - nfts[_nftID].lastEmissionBlock) * nfts[_nftID].level * collections[nfts[_nftID].collectionID].tokenProductEmission / 10**tokenUpgrade.decimals();
+        return (block.number - nfts[_nftID].lastEmissionBlock) * nfts[_nftID].level * collections[nfts[_nftID].collectionID].tokenProductEmission;
     }
 
     function mint(address _recipient, uint _collectionID, string memory _name) public onlyOwner returns (uint) {

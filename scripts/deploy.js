@@ -81,8 +81,8 @@ var marketplace = await Marketplace.attach('0xa8065D525E83C90271Db6187C33F78Ff6f
  // ADD COLLECTIONS AND PROPERTIES:
  
  // collectionAdd: name, factoryTime, tokenProductEmission, tokenUpgradePrice, tokenFactoryPrice
- var piggy = await collectionAdd(nft, 'Piggy', '604800', '1000000000000000', '1000000000000000000', '10000000000000000000');
- //var duck = await collectionAdd(nft, 'Duck', '604800', '100000000000000', '500000000000000000', '3000000000000000000');
+ var piggy = await collectionAdd(nft, 'Piggy', '604800', '1000000000000000', '10000000000000000000', '20000000000000000000');
+ //var duck = await collectionAdd(nft, 'Duck', '604800', '500000000000000', '5000000000000000000', '10000000000000000000');
  
  // collectionPropertyAdd: collectionID, name, basicCount
  await collectionPropertyAdd(nft, piggy, 'Body', '3');
