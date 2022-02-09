@@ -122,11 +122,16 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function nftSetProperty(uint _nftID, uint _propertyID, uint _value) public {
-        require(ownerOf(_nftID) == msg.sender, 'changeNFTProperty: You are not the owner of this NFT');
-        require(collections[nfts[_nftID].collectionID].properties.length >= _propertyID, 'changeNFTProperty: Property does not exist');
-        require(collections[nfts[_nftID].collectionID].properties[_propertyID].basicCount <= _value , 'changeNFTProperty: This property is not available');
+        require(nfts[_nftID].exists, 'nftSetProperty: Wrong NFT ID');
+        require(ownerOf(_nftID) == msg.sender, 'nftSetProperty: You are not the owner of this NFT');
+        require(collections[nfts[_nftID].collectionID].properties.length >= _propertyID, 'nftSetProperty: Property does not exist');
+        require(collections[nfts[_nftID].collectionID].properties[_propertyID].basicCount <= _value , 'nftSetProperty: This property is not available');
         uint amount = collections[nfts[_nftID].collectionID].tokenUpgradePriceSetProperty;
-        require(, 'changeNFTProperty: Not enough Token Upgrade in your wallet');
+        require(tokenUpgrade.allowance(msg.sender, address(this)) >= amount, 'nftSetProperty: Token Upgrade allowance is too low');
+        require(tokenUpgrade.balanceOf(msg.sender) >= amount, 'nftSetProperty: Not enough Token Upgrade in your wallet');
+        tokenUpgrade.safeTransferFrom(msg.sender, address(this), amount);
+        tokenUpgrade.safeTransfer(devFeeAddress, amount * devFeePercent / 10000);
+        tokenUpgrade.safeTransfer(burnAddress, amount * (10000 - devFeePercent) / 10000);
         uint valueOld = nfts[_nftID].properties[_propertyID];
         nfts[_nftID].properties[_propertyID] = _value;
         emit eventNFTSetNFTProperty(_nftID, valueOld, _value);
@@ -231,7 +236,7 @@ contract NFT is ERC721MintMore, Ownable {
         return collections[_collectionID].properties[_propertyID];
     }
 
-    function collectionAdd(string memory _name, uint _factoryTime, uint _tokenProductEmission, uint _tokenUpgradePriceLevel, uint tokenUpgradePriceSetProperty, uint _tokenFactoryPrice) public onlyOwner returns (uint) {
+    function collectionAdd(string memory _name, uint _factoryTime, uint _tokenProductEmission, uint _tokenUpgradePriceLevel, uint _tokenUpgradePriceSetProperty, uint _tokenFactoryPrice) public onlyOwner returns (uint) {
         collections[collectionsCount].exists = true;
         collections[collectionsCount].name = _name;
         collections[collectionsCount].factoryTime = _factoryTime;
