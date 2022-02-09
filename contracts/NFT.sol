@@ -139,14 +139,17 @@ contract NFT is ERC721MintMore, Ownable {
 
     function nftHarvestTokenProduct(uint _nftID) public {
         uint toHarvest = getTokenProductToHarvest(_nftID);
-        tokenProduct.mint(toHarvest);
-        tokenProduct.safeTransfer(ownerOf(_nftID), toHarvest);
+        if (ownerOf(_nftID) != owner()) {
+            tokenProduct.mint(toHarvest);
+            tokenProduct.safeTransfer(ownerOf(_nftID), toHarvest);
+        }
         nfts[_nftID].lastEmissionBlock = block.number;
         emit eventNFTHarvestTokenProduct(_nftID, msg.sender, toHarvest);
     }
 
     function getTokenProductToHarvest(uint _nftID) public view returns(uint) {
-        return (block.number - nfts[_nftID].lastEmissionBlock) * nfts[_nftID].level * collections[nfts[_nftID].collectionID].tokenProductEmission;
+        if (ownerOf(_nftID) != owner()) return 0;
+        else return (block.number - nfts[_nftID].lastEmissionBlock) * nfts[_nftID].level * collections[nfts[_nftID].collectionID].tokenProductEmission;
     }
 
     function mint(address _recipient, uint _collectionID, string memory _name, bool _hasParents, uint _parentMaleID, uint _parentFemaleID) public onlyOwner returns (uint) {
