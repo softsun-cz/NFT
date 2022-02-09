@@ -64,6 +64,9 @@ contract NFT is ERC721MintMore, Ownable {
     struct NFTDetails {
         bool exists;
         bool sex;
+        bool hasParents;
+        uint parentMaleID;
+        uint parentFemaleID;
         string name;
         uint collectionID;
         uint level;
@@ -137,13 +140,24 @@ contract NFT is ERC721MintMore, Ownable {
         return (block.number - nfts[_nftID].lastEmissionBlock) * nfts[_nftID].level * collections[nfts[_nftID].collectionID].tokenProductEmission;
     }
 
-    function mint(address _recipient, uint _collectionID, string memory _name) public onlyOwner returns (uint) {
+    function mint(address _recipient, uint _collectionID, string memory _name, bool _hasParents, uint _parentMaleID, uint _parentFemaleID) public onlyOwner returns (uint) {
         require(collections[_collectionID].exists, 'mint: Wrong collection ID');
         require(collections[_collectionID].properties.length > 0, 'mint: This collection has no properties');
         require(getUTFStrLen(_name) <= 16, 'mint: Name is too long. Maximum: 16 characters');
         require(getCharMatch(_name), 'mint: Name can contain only a-z, A-Z, 0-9, space and dot');
+        if (_hasParents) {
+            require(nfts[_parentMaleID].exists, 'mint: parentMaleID does not exist');
+            require(nfts[_parentMaleID].collectionID == _collectionID, 'mint: parentMaleID is from different collection');
+            require(nfts[_parentMaleID].sex, 'mint: parentMaleID does not refer to male NFT');
+            require(nfts[_parentFemaleID].exists, 'mint: parentFemaleID does not exist');
+            require(nfts[_parentFemaleID].collectionID == _collectionID, 'mint: parentFemaleID is from different collection');
+            require(!nfts[_parentFemaleID].sex, 'mint: parentFemaleID does not refer to female NFT');
+        } else {
+            require(_parentMaleID == 0, 'mint: parentMaleID has to be 0');
+            require(_parentFemaleID == 0, 'mint: parentFemaleID has to be 0');
+        }
         _safeMint(_recipient, nftCount);
-        mintAddDetails(_collectionID, _name);
+        mintAddDetails(_collectionID, _name, _hasParents, _parentMaleID, _parentFemaleID);
         return nftCount - 1;
     }
 
@@ -153,19 +167,23 @@ contract NFT is ERC721MintMore, Ownable {
         require(getUTFStrLen(_name) <= 16, 'mintMore: Name is too long. Maximum: 16 characters');
         require(getCharMatch(_name), 'mintMore: Name can contain only a-z, A-Z, 0-9, space and dot');
         _mintMore(_recipient, nftCount, _count);
-        for (uint i = 0; i < _count; i++) mintAddDetails(_collectionID, string(abi.encodePacked(_name, ' ', Strings.toString(nftCount + 1))));
+        for (uint i = 0; i < _count; i++) mintAddDetails(_collectionID, string(abi.encodePacked(_name, ' ', Strings.toString(nftCount + 1))), false, 0, 0);
         return nftCount - 1;
     }
 
     function mintMoreToMarketplace(uint _collectionID, string memory _name, uint _price, uint _count) public onlyOwner {
         uint startID = nftCount;
         mintMore(address(this), _collectionID, _name, _count);
+        setApprovalForAll(address(this), true);
         for (uint i = 0; i < _count; i++) marketplace.deposit(address(this), startID + i, _price);
     }
 
-    function mintAddDetails(uint _collectionID, string memory _name) private onlyOwner {
+    function mintAddDetails(uint _collectionID, string memory _name, bool _hasParents, uint _parentMaleID, uint _parentFemaleID) private onlyOwner {
         nfts[nftCount].exists = true;
         nfts[nftCount].sex = getRandomNumber(2) == 1 ? true : false;
+        nfts[nftCount].hasParents = _hasParents;
+        nfts[nftCount].parentMaleID = _parentMaleID;
+        nfts[nftCount].parentFemaleID = _parentFemaleID;
         nfts[nftCount].name = _name;
         nfts[nftCount].collectionID = _collectionID;
         nfts[nftCount].level = 1;
@@ -189,7 +207,7 @@ contract NFT is ERC721MintMore, Ownable {
         tokenFactory.safeTransferFrom(msg.sender, address(this), collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice);
         tokenFactory.safeTransfer(devFeeAddress, collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice * devFeePercent / 10000);
         tokenFactory.safeTransfer(burnAddress, collections[nfts[_nftMaleID].collectionID].tokenFactoryPrice * (10000 - devFeePercent) / 10000);
-        uint newID = mint(msg.sender, nfts[_nftMaleID].collectionID, _name);
+        uint newID = mint(msg.sender, nfts[_nftMaleID].collectionID, _name, true, _nftMaleID, _nftFemaleID);
         emit eventFactory(_nftMaleID, _nftFemaleID, newID);
     }
 

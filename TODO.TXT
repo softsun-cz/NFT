@@ -13,12 +13,10 @@ TODO:
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - Marketplace - nastavit, aby pouzival funkci nft.transfer (ktera harvestne tokeny puvodnimu majiteli)
-- NFT - nftHarvestTokenProduct - mintuje - owner tokenProduct musi byt NFT contract !!!
+- NFT - pridat moznost renounce na kolekci - tzn. s ni uz nejde nic delat (manualni mint (pozor - breeding mint musi fungovat), ani pridavat / menit hodnoty properties atd.)
 - NFT - getNFTProperty vraci pri spravne zadanem NFT a Property ID error
-- NFT - nftLevelUpgrade() - otestovat, jestli to hodi chybu, kdyz nemam dostatek tokenu, pokud to projde s nizsi castkou, tak tam pridat require
-- NFT - pridat rodice NFT (pokud jsou)
 - NFT - pridat zmenu vzhledu (upgradeToken - pridat cenu zmeny vzhledu do kolekce)
-- NFT - mintToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
+- NFT - mintMoreToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - NFT - neemitovat product tokeny, pokud owner je nase penezenka
 - NFT - pridat moznost properties, ktere nejsou basic
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
