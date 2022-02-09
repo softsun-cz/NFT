@@ -53,8 +53,8 @@ var TokenUpgrade = await ethers.getContractFactory('TokenUpgrade');
 var tokenUpgrade = await TokenUpgrade.attach('0xd843856E8F3bD582A683C2f91555754254BA4783');
 var TokenFactory = await ethers.getContractFactory('TokenFactory');
 var tokenFactory = await TokenFactory.attach('0x96C1331c1cC8657a78850FD61DF345D27141bFC3');
-var TokenProduct = await ethers.getContractFactory('TokenProduct');
-var tokenProduct = await TokenProduct.attach('0x1556Ecb8404b4bc87254F390DF50f81cC2346689');
+//var TokenProduct = await ethers.getContractFactory('TokenProduct');
+//var tokenProduct = await TokenProduct.attach('0x1556Ecb8404b4bc87254F390DF50f81cC2346689');
 var Marketplace = await ethers.getContractFactory('Marketplace');
 var marketplace = await Marketplace.attach('0xa8065D525E83C90271Db6187C33F78Ff6fc3EF5e');
 
@@ -72,7 +72,7 @@ var marketplace = await Marketplace.attach('0xa8065D525E83C90271Db6187C33F78Ff6f
  //var sale = await deploy('Sale', saleCurrencyAddress);
  //var tokenUpgrade = await deploy('TokenUpgrade', tokenUpgradeName, tokenUpgradeSymbol);
  //var tokenFactory = await deploy('TokenFactory', tokenFactoryName, tokenFactorySymbol);
- //var tokenProduct = await deploy('TokenProduct', tokenProductName, tokenProductSymbol);
+ var tokenProduct = await deploy('TokenProduct', tokenProductName, tokenProductSymbol);
  //var marketplace = await deploy('Marketplace', marketplaceCurrencyAddress, marketplaceDevFeePercent);
  var nft = await deploy('NFT', nftName, nftSymbol, nftDevFeePercent, devFeeAddress, burnAddress, marketplace.address, tokenFactory.address, tokenProduct.address, tokenUpgrade.address);
  createVerifyScript();
@@ -108,10 +108,11 @@ var marketplace = await Marketplace.attach('0xa8065D525E83C90271Db6187C33F78Ff6f
  // TEST - TOKEN UPGRADE AND TOKEN FACTORY TO DEV WALLET
  await runFunction(tokenUpgrade, 'mint', '10000000000000000000000');
  await runFunction(tokenFactory, 'mint', '10000000000000000000000');
- 
+ */
  // SETTINGS:
- await runFunction(marketplace, 'addAcceptedContract', nft.address);
+ //await runFunction(marketplace, 'addAcceptedContract', nft.address);
  await runFunction(tokenProduct, 'transferOwnership', nft.address);
+ /*
  await runFunction(tokenUpgrade, 'transferOwnership', sale.address);
  await runFunction(tokenFactory, 'transferOwnership', sale.address);
  await runFunction(sale, 'addToken', tokenFactory.address, saleTokenFactoryInitialPrice, saleTokenFactoryIncreaseEvery, saleTokenFactoryMultiplier);
