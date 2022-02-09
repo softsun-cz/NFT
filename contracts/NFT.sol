@@ -126,11 +126,9 @@ contract NFT is ERC721MintMore, Ownable {
     }
 
     function nftHarvestTokenProduct(uint _nftID) public {
-        require(ownerOf(_nftID) == msg.sender, 'harvestTokenProduct: You are not the owner of this NFT');
         uint toHarvest = getTokenProductToHarvest(_nftID);
-        require(toHarvest != 0, 'harvestTokenProduct: No tokens to harvest');
         tokenProduct.mint(toHarvest);
-        tokenProduct.safeTransfer(msg.sender, toHarvest);
+        tokenProduct.safeTransfer(ownerOf(_nftID), toHarvest);
         nfts[_nftID].lastEmissionBlock = block.number;
         emit eventNFTHarvestTokenProduct(_nftID, msg.sender, toHarvest);
     }

@@ -7,11 +7,13 @@ TODO:
 - Web - pridat vyhledavani podle ID + pridat adresu ownera
 - Web - pridat stranku Breeding (Factory)
 - Web - pridat stranku Staking
-- Web - pri upgradovani cizich NFTcek zobrazit upozorneni, ze to neni vlastni NFT
+- Web - pri nftLevelUpgrade() cizich NFTcek zobrazit upozorneni, ze to neni vlastni NFT, ale povolit
+- Web - pri nftHarvestTokenProduct() cizich NFTcek zobrazit upozorneni, ze to neni vlastni NFT, ale povolit
 - Web - pridat stranku Statistics - zde budou statistiky ke vsem contractum - info o NFT, Token Factory, Token Product, Token Upgrade, Sale, Marketplace, Factory
 - Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - Marketplace - nastavit, aby pouzival funkci nft.transfer (ktera harvestne tokeny puvodnimu majiteli)
+- NFT - nftHarvestTokenProduct - mintuje - owner tokenProduct musi byt NFT contract !!!
 - NFT - getNFTProperty vraci pri spravne zadanem NFT a Property ID error
 - NFT - nftLevelUpgrade() - otestovat, jestli to hodi chybu, kdyz nemam dostatek tokenu, pokud to projde s nizsi castkou, tak tam pridat require
 - NFT - pridat rodice NFT (pokud jsou)

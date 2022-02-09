@@ -1,4 +1,5 @@
 //const hre = require('hardhat');
+const { debug } = require('console');
 const fetch = require('node-fetch');
 
 var netInfo;
@@ -8,6 +9,7 @@ var verifyScript = '';
 const confirmNum = 1;
 
 async function main() {
+ const maxint = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
  var devFeeAddress = '0x650E5c6071f31065d7d5Bf6CaD5173819cA72c41';
  var burnAddress = '0x000000000000000000000000000000000000dEaD';
  var nftName = 'Animals.town';
@@ -29,7 +31,8 @@ async function main() {
  var saleTokenFactoryIncreaseEvery = '100000000000000000000'; // 100 UPG
  var saleTokenFactoryMultiplier = '100'; // 1%
  
- // TEST ONLY:
+ /*
+ // TEST ONLY - POLYGON MUMBAI:
  var Sale = await ethers.getContractFactory('Sale');
  var sale = await Sale.attach('0x80403b7Bf6421761b21B105E421ba9580C305359');
  var TokenUpgrade = await ethers.getContractFactory('TokenUpgrade');
@@ -40,6 +43,21 @@ async function main() {
  var tokenProduct = await TokenProduct.attach('0x3F80F71c54f2a83947e9e206DAe114C873d74d94');
  var Marketplace = await ethers.getContractFactory('Marketplace');
  var marketplace = await Marketplace.attach('0x2ab7866C275e8Be9362fbc7C2817a7a6988e2769');
+ */
+
+
+// TEST ONLY - AVAX TESTNET:
+var Sale = await ethers.getContractFactory('Sale');
+var sale = await Sale.attach('0x34FDb0e9cd2D767E6dB8c2030b57a34A1feC5dba');
+var TokenUpgrade = await ethers.getContractFactory('TokenUpgrade');
+var tokenUpgrade = await TokenUpgrade.attach('0xd843856E8F3bD582A683C2f91555754254BA4783');
+var TokenFactory = await ethers.getContractFactory('TokenFactory');
+var tokenFactory = await TokenFactory.attach('0x96C1331c1cC8657a78850FD61DF345D27141bFC3');
+var TokenProduct = await ethers.getContractFactory('TokenProduct');
+var tokenProduct = await TokenProduct.attach('0x1556Ecb8404b4bc87254F390DF50f81cC2346689');
+var Marketplace = await ethers.getContractFactory('Marketplace');
+var marketplace = await Marketplace.attach('0xa8065D525E83C90271Db6187C33F78Ff6fc3EF5e');
+
  /*
  var NFT = await ethers.getContractFactory('NFT');
  var nft = await NFT.attach('');
@@ -80,6 +98,12 @@ async function main() {
  await collectionPropertyAdd(nft, duck, 'Wings', '5');
 */
 
+ // TEST - mint 10 NFT
+ await runFunction(nft, 'mintMore', await nft.owner(), 0, 'Piggy', 10);
+
+ // TEST - approve Token Upgrade to NFT contract
+ await runFunction(tokenUpgrade, 'approve', nft.address, maxint);
+
  /*
  // TEST - TOKEN UPGRADE AND TOKEN FACTORY TO DEV WALLET
  await runFunction(tokenUpgrade, 'mint', '10000000000000000000000');
@@ -95,7 +119,6 @@ async function main() {
  */
 /*
  // TEST - SALE - APPROVE
- const maxint = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
  var XUSD = await ethers.getContractFactory('TokenProduct');
  var xusd = await XUSD.attach('0xF42a4429F107bD120C5E42E069FDad0AC625F615');
  await runFunction(xusd, 'approve', sale.address, maxint);
