@@ -34,7 +34,8 @@ contract NFT is ERC721MintMore, Ownable {
     event eventCollectionRename(uint indexed _collectionID, string indexed _nameOld, string indexed _nameNew);
     event eventCollectionSetFactoryTime(uint indexed _collectionID, uint indexed _factoryTimeOld, uint indexed _factoryTimeNew);
     event eventCollectionSetTokenProductEmission(uint _collectionID, uint indexed _emissionOld, uint indexed _emissionNew);
-    event eventCollectionSetTokenUpgradePrice(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
+    event eventCollectionSetTokenUpgradePriceLevel(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
+    event eventCollectionSetTokenUpgradePriceSetProperty(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
     event eventCollectionSetTokenFactoryPrice(uint indexed _collectionID, uint indexed _priceOld, uint indexed _price);
     event eventCollectionRemove(uint indexed _collectionID);
     event eventCollectionPropertyAdd(uint indexed _collectionID, uint indexed _propertyID, string indexed _name);
@@ -48,7 +49,8 @@ contract NFT is ERC721MintMore, Ownable {
         string name;
         uint factoryTime; // 50400 = 1 day
         uint tokenProductEmission;
-        uint tokenUpgradePrice;
+        uint tokenUpgradePriceLevel;
+        uint tokenUpgradePriceSetProperty;
         uint tokenFactoryPrice;
         Property[] properties;
         uint nftCount;
@@ -105,18 +107,9 @@ contract NFT is ERC721MintMore, Ownable {
         emit eventNFTRename(_nftID, nameOld, _name);
     }
 
-    function nftSetProperty(uint _nftID, uint _propertyID, uint _value) public {
-        require(ownerOf(_nftID) == msg.sender, 'changeNFTProperty: You are not the owner of this NFT');
-        require(collections[nfts[_nftID].collectionID].properties.length >= _propertyID, 'changeNFTProperty: Property does not exist');
-        require(collections[nfts[_nftID].collectionID].properties[_propertyID].basicCount <= _value , 'changeNFTProperty: This property is not available');
-        uint valueOld = nfts[_nftID].properties[_propertyID];
-        nfts[_nftID].properties[_propertyID] = _value;
-        emit eventNFTSetNFTProperty(_nftID, valueOld, _value);
-    }
-
     function nftLevelUpgrade(uint _nftID, uint _levels) public {
         require(nfts[_nftID].exists, 'nftLevelUpgrade: Wrong NFT ID');
-        uint amount = _levels * collections[nfts[_nftID].collectionID].tokenUpgradePrice;
+        uint amount = _levels * collections[nfts[_nftID].collectionID].tokenUpgradePriceLevel;
         require(tokenUpgrade.allowance(msg.sender, address(this)) >= amount, 'nftLevelUpgrade: Token Upgrade allowance is too low');
         require(tokenUpgrade.balanceOf(msg.sender) >= amount, 'nftLevelUpgrade: Not enough Token Upgrade in your wallet');
         tokenUpgrade.safeTransferFrom(msg.sender, address(this), amount);
@@ -126,6 +119,17 @@ contract NFT is ERC721MintMore, Ownable {
         uint levelOld = nfts[_nftID].level;
         nfts[_nftID].level += _levels;
         emit eventNFTLevelUpgrade(_nftID, levelOld, nfts[_nftID].level);
+    }
+
+    function nftSetProperty(uint _nftID, uint _propertyID, uint _value) public {
+        require(ownerOf(_nftID) == msg.sender, 'changeNFTProperty: You are not the owner of this NFT');
+        require(collections[nfts[_nftID].collectionID].properties.length >= _propertyID, 'changeNFTProperty: Property does not exist');
+        require(collections[nfts[_nftID].collectionID].properties[_propertyID].basicCount <= _value , 'changeNFTProperty: This property is not available');
+        uint amount = collections[nfts[_nftID].collectionID].tokenUpgradePriceSetProperty;
+        require(, 'changeNFTProperty: Not enough Token Upgrade in your wallet');
+        uint valueOld = nfts[_nftID].properties[_propertyID];
+        nfts[_nftID].properties[_propertyID] = _value;
+        emit eventNFTSetNFTProperty(_nftID, valueOld, _value);
     }
 
     function nftHarvestTokenProduct(uint _nftID) public {
@@ -227,12 +231,13 @@ contract NFT is ERC721MintMore, Ownable {
         return collections[_collectionID].properties[_propertyID];
     }
 
-    function collectionAdd(string memory _name, uint _factoryTime, uint _tokenProductEmission, uint _tokenUpgradePrice, uint _tokenFactoryPrice) public onlyOwner returns (uint) {
+    function collectionAdd(string memory _name, uint _factoryTime, uint _tokenProductEmission, uint _tokenUpgradePriceLevel, uint tokenUpgradePriceSetProperty, uint _tokenFactoryPrice) public onlyOwner returns (uint) {
         collections[collectionsCount].exists = true;
         collections[collectionsCount].name = _name;
         collections[collectionsCount].factoryTime = _factoryTime;
         collections[collectionsCount].tokenProductEmission = _tokenProductEmission;
-        collections[collectionsCount].tokenUpgradePrice = _tokenUpgradePrice;
+        collections[collectionsCount].tokenUpgradePriceLevel = _tokenUpgradePriceLevel;
+        collections[collectionsCount].tokenUpgradePriceSetProperty = _tokenUpgradePriceSetProperty;
         collections[collectionsCount].tokenFactoryPrice = _tokenFactoryPrice;
         collections[collectionsCount].nftCount = 0;
         collections[collectionsCount].createdTime = block.timestamp;
@@ -264,12 +269,20 @@ contract NFT is ERC721MintMore, Ownable {
         emit eventCollectionSetTokenProductEmission(_collectionID, emissionOld, _emission);
     }
 
-    function collectionSetTokenUpgradePrice(uint _collectionID, uint _price) public onlyOwner {
-        require(collections[_collectionID].exists, 'collectionSetTokenUpgradePrice: Wrong collection ID');
-        require(collections[_collectionID].nftCount == 0, 'collectionSetTokenUpgradePrice: Cannot set token Upgrade price in collection that has NFTs.');
-        uint priceOld = collections[_collectionID].tokenUpgradePrice;
-        collections[_collectionID].tokenUpgradePrice = _price;
-        emit eventCollectionSetTokenUpgradePrice(_collectionID, priceOld, _price);
+    function collectionSetTokenUpgradePriceLevel(uint _collectionID, uint _price) public onlyOwner {
+        require(collections[_collectionID].exists, 'collectionSetTokenUpgradePriceLevel: Wrong collection ID');
+        require(collections[_collectionID].nftCount == 0, 'collectionSetTokenUpgradePriceLevel: Cannot set token Upgrade price in collection that has NFTs.');
+        uint priceOld = collections[_collectionID].tokenUpgradePriceLevel;
+        collections[_collectionID].tokenUpgradePriceLevel = _price;
+        emit eventCollectionSetTokenUpgradePriceLevel(_collectionID, priceOld, _price);
+    }
+
+    function collectionSetTokenUpgradePriceSetProperty(uint _collectionID, uint _price) public onlyOwner {
+        require(collections[_collectionID].exists, 'collectionSetTokenUpgradePriceSetProperty: Wrong collection ID');
+        require(collections[_collectionID].nftCount == 0, 'collectionSetTokenUpgradePriceSetProperty: Cannot set token Upgrade price in collection that has NFTs.');
+        uint priceOld = collections[_collectionID].tokenUpgradePriceSetProperty;
+        collections[_collectionID].tokenUpgradePriceSetProperty = _price;
+        emit eventCollectionSetTokenUpgradePriceSetProperty(_collectionID, priceOld, _price);
     }
 
     function collectionSetTokenFactoryPrice(uint _collectionID, uint _price) public onlyOwner {

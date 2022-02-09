@@ -84,9 +84,9 @@ var marketplace = await Marketplace.attach('0xAD531A13b61E6Caf50caCdcEebEbFA8E6F
 
  // ADD COLLECTIONS AND PROPERTIES:
  
- // collectionAdd: name, factoryTime, tokenProductEmission, tokenUpgradePrice, tokenFactoryPrice
- var piggy = await collectionAdd(nft, 'Piggy', '604800', '1000000000000000', '10000000000000000000', '20000000000000000000');
- //var duck = await collectionAdd(nft, 'Duck', '604800', '500000000000000', '5000000000000000000', '10000000000000000000');
+ // collectionAdd: name, factoryTime, tokenProductEmission, tokenUpgradePriceLevel, tokenUpgradePriceSetProperty, tokenFactoryPrice
+ var piggy = await collectionAdd(nft, 'Piggy', '604800', '1000000000000000', '10000000000000000000', '1000000000000000000', '20000000000000000000');
+ //var duck = await collectionAdd(nft, 'Duck', '604800', '500000000000000', '5000000000000000000', '500000000000000000', '10000000000000000000');
  
  // collectionPropertyAdd: collectionID, name, basicCount
  await collectionPropertyAdd(nft, piggy, 'Body', '3');
@@ -286,9 +286,9 @@ async function runFunction() {
  console.log();
 }
 
-async function collectionAdd(contract, name, factoryTime, tokenProductEmission, tokenUpgradePrice, tokenFactoryPrice) {
+async function collectionAdd(contract, name, factoryTime, tokenProductEmission, tokenUpgradePriceLevel, tokenUpgradePriceSetProperty, tokenFactoryPrice) {
  console.log('Adding collection: \"' + name + '\"');
- await runFunction(contract, 'collectionAdd', name, factoryTime, tokenProductEmission, tokenUpgradePrice, tokenFactoryPrice);
+ await runFunction(contract, 'collectionAdd', name, factoryTime, tokenProductEmission, tokenUpgradePriceLevel, tokenUpgradePriceSetProperty, tokenFactoryPrice);
  return (await contract.collectionsCount() - 1).toString();
 }
 

@@ -15,9 +15,9 @@ TODO:
 - Marketplace - nastavit, aby pouzival funkci nft.transfer (ktera harvestne tokeny puvodnimu majiteli)
 - NFT - mintToMarketplace a mintMoreToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - NFT - getNFTProperty vraci pri spravne zadanem NFT a Property ID error
-- NFT - pridat moznost renounce na kolekci - tzn. s ni uz nejde nic delat (manualni mint (pozor - breeding mint musi fungovat), ani pridavat / menit hodnoty properties atd.)
 - NFT - pridat zmenu vzhledu (upgradeToken - pridat cenu zmeny vzhledu do kolekce)
 - NFT - neemitovat product tokeny, pokud owner je nase penezenka
+- NFT - pridat moznost renounce na kolekci - tzn. s ni uz nejde nic delat (manualni mint (pozor - breeding mint musi fungovat), ani pridavat / menit hodnoty properties atd.)
 - NFT - pridat moznost properties, ktere nejsou basic
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
 - NFT - ERC721MintMore - zmensit a udelat z nej library nebo abstract contract nebo neco takoveho - pokus je v /root/ZALOHA
