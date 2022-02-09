@@ -171,10 +171,14 @@ contract NFT is ERC721MintMore, Ownable {
         return nftCount - 1;
     }
 
+    function mintToMarketplace(uint _collectionID, string memory _name, uint _price) public onlyOwner {
+        uint nftID = mint(address(this), _collectionID, _name, false, 0, 0);
+        marketplace.deposit(address(this), nftID, _price);
+    }
+
     function mintMoreToMarketplace(uint _collectionID, string memory _name, uint _price, uint _count) public onlyOwner {
         uint startID = nftCount;
         mintMore(address(this), _collectionID, _name, _count);
-        setApprovalForAll(address(this), true);
         for (uint i = 0; i < _count; i++) marketplace.deposit(address(this), startID + i, _price);
     }
 

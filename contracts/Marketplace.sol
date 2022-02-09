@@ -3,6 +3,8 @@
 pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
+// import '@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol';
+
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -73,7 +75,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
     
     function deposit(address _addressContract, uint _tokenID, uint _price) public nonReentrant {
         IERC721 nft = IERC721(_addressContract);
-        require(nft.getApproved(_tokenID) == address(this), 'deposit: Allowance is too low');
+        //require(nft.getApproved(_tokenID) == address(this), 'deposit: Allowance is too low');
         require(acceptedContracts[_addressContract], 'deposit: this NFT is not accepted by this Marketplace');
         nft.safeTransferFrom(msg.sender, address(this), _tokenID);
         deposited.push(Details(address(nft), _tokenID, msg.sender, _price));

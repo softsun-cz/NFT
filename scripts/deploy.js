@@ -60,7 +60,7 @@ var marketplace = await Marketplace.attach('0x15556dB95C89d3f384a750359c15258f16
 
 // TEST ONLY - FANTOM TESTNET:
 var Marketplace = await ethers.getContractFactory('Marketplace');
-var marketplace = await Marketplace.attach('0x8B8C03041B87DFA7afDe85487A98FC0519734877');
+var marketplace = await Marketplace.attach('0xAD531A13b61E6Caf50caCdcEebEbFA8E6F5Cbc4D');
 
  /*
  var NFT = await ethers.getContractFactory('NFT');
@@ -115,7 +115,10 @@ var marketplace = await Marketplace.attach('0x8B8C03041B87DFA7afDe85487A98FC0519
  */
  // SETTINGS:
  await runFunction(marketplace, 'addAcceptedContract', nft.address);
+ 
  await runFunction(nft, 'setApprovalForAll', marketplace.address, 'true');
+ await runFunction(nft, 'setApprovalForAll', nft.address, 'true');
+ //await runFunction(nft, 'setApprovalForAll', await nft.owner(), 'true');
  //await runFunction(tokenProduct, 'transferOwnership', nft.address);
  /*
  await runFunction(tokenUpgrade, 'transferOwnership', sale.address);
