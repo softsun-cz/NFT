@@ -117,7 +117,7 @@ var marketplace = await Marketplace.attach('0xAD531A13b61E6Caf50caCdcEebEbFA8E6F
  await runFunction(marketplace, 'addAcceptedContract', nft.address);
  
  await runFunction(nft, 'setApprovalForAll', marketplace.address, 'true');
- await runFunction(nft, 'setApprovalForAll', nft.address, 'true');
+ //await runFunction(nft, 'setApprovalForAll', nft.address, 'true');
  //await runFunction(nft, 'setApprovalForAll', await nft.owner(), 'true');
  //await runFunction(tokenProduct, 'transferOwnership', nft.address);
  /*
