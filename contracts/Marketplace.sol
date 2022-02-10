@@ -13,11 +13,12 @@ contract Marketplace is Ownable, ReentrancyGuard {
     IERC20 currency;
     address devFeeAddress;
     uint16 devFeePercent;
-    uint totalDeposit;
-    uint totalWithdraw;
-    uint totalBuy;
+    uint totalDeposits;
+    uint totalDeposited;
+    uint totalWithdraws;
+    uint totalBuys;
     mapping (address => bool) public acceptedContracts;
-    Details[] deposited;
+    mapping (uint => Details) public deposited;
     event eventDeposit(uint indexed _depositID, Deposit indexed _deposit);
     event eventWithdraw(uint indexed _withdrawID, Withdraw indexed _withdraw);
     event eventBuy(uint indexed _buyID, Buy indexed _buy);
@@ -48,6 +49,7 @@ contract Marketplace is Ownable, ReentrancyGuard {
     }
 
     struct Details {
+        bool exists;
         address addressContract;
         uint nftID;
         address owner;
@@ -63,21 +65,23 @@ contract Marketplace is Ownable, ReentrancyGuard {
     function deposit(address _addressContract, uint _nftID, uint _price) public nonReentrant {
         INFT nft = INFT(_addressContract);
         require(acceptedContracts[_addressContract], 'deposit: this NFT is not accepted by this Marketplace');
+        require(nft.ownerOf(_nftID) == msg.sender, 'deposit: You are not the owner of this NFT');
         nft.transfer(msg.sender, address(this), _nftID);
-        deposited.push(Details(address(nft), _nftID, msg.sender, _price));
-        totalDeposit++;
-        emit eventDeposit(totalDeposit, Deposit(_addressContract, _nftID, msg.sender, _price, block.timestamp));
+        deposited[totalDeposits] = Details(true, address(nft), _nftID, msg.sender, _price);
+        totalDeposits++;
+        totalDeposited++;
+        emit eventDeposit(totalDeposits, Deposit(_addressContract, _nftID, msg.sender, _price, block.timestamp));
     }
 
     function withdraw(uint _id) public nonReentrant {
-        // TODO: check if array exists
+        require(deposited[_id].exists, 'withdraw: Item ID not found');
         require(deposited[_id].owner == msg.sender, 'withdraw: You are not the owner of this NFT');
         INFT nft = INFT(deposited[_id].addressContract);
         nft.transfer(address(this), msg.sender, deposited[_id].nftID);
-        // TODO: remove element from mapping (not possible, try array instead?)
-        totalWithdraw++;
-        emit eventWithdraw(totalWithdraw, Withdraw(deposited[_id].addressContract, deposited[_id].nftID, deposited[_id].owner, deposited[_id].price, block.timestamp));
         delete deposited[_id];
+        totalWithdraws++;
+        totalDeposited--;
+        emit eventWithdraw(totalWithdraws, Withdraw(deposited[_id].addressContract, deposited[_id].nftID, deposited[_id].owner, deposited[_id].price, block.timestamp));
     }
 
     function buy(uint _id) public nonReentrant {
@@ -88,8 +92,9 @@ contract Marketplace is Ownable, ReentrancyGuard {
         currency.safeTransfer(deposited[_id].owner, deposited[_id].price * (10000 - devFeePercent) / 10000);
         currency.safeTransfer(devFeeAddress, deposited[_id].price * devFeePercent / 10000);
         nft.transfer(address(this), msg.sender, deposited[_id].nftID);
-        totalBuy++;
-        emit eventBuy(totalBuy, Buy(deposited[_id].addressContract, deposited[_id].nftID, deposited[_id].owner, msg.sender, deposited[_id].price, block.timestamp));
+        totalBuys++;
+        totalDeposited--;
+        emit eventBuy(totalBuys, Buy(deposited[_id].addressContract, deposited[_id].nftID, deposited[_id].owner, msg.sender, deposited[_id].price, block.timestamp));
         delete deposited[_id];
     }
 
