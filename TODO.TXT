@@ -15,6 +15,7 @@ TODO:
       - vymyslet, jak udelat attach a detach
 - NFT - ERC721MintMore - zmensit a udelat z nej library nebo abstract contract nebo neco takoveho - pokus je v /root/ZALOHA
 - NFT - rozdelit do libraries / abstract contract a zrusit v hardhat.config.js optimizer
+- Staking - pouzit contract z Rich Pig - https://github.com/RichPigToken/richpig-contracts/blob/master/contracts/MasterChef.sol
 - Vytvorit multiDev contract (vlastni projekt) - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri
 
 TODO in English:
@@ -33,6 +34,7 @@ TODO in English:
       - think out, how to do attach a detach
 - NFT - ERC721MintMore - make it smaller and as a library or abstract contract or something like that - tried it in /root/ZALOHA
 - NFT - split to libraries / abstract contracts a then disable optimizer in hardhat.config.js
+- Staking - contract from Rich Pig - https://github.com/RichPigToken/richpig-contracts/blob/master/contracts/MasterChef.sol
 
 Console test:
 -------------
