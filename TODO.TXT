@@ -1,21 +1,38 @@
 TODO:
 -----
 - Web - Dokumentace v https://docs.google.com/document/d/1WqZTzvYa_dGVCoZfY07SutbA61Qkev3V/edit?usp=sharing&ouid=115246878666378037611&rtpof=true&sd=true
-- Sale - polovina z vybranych USD ma jit na likviditu Token Product (DAI + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
+- Sale - polovina z vybranych DAI ma jit na likviditu Token Product (DAI + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - NFT - mintToMarketplace a mintMoreToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - NFT - getNFTProperty vraci pri spravne zadanem NFT a Property ID error
 - NFT - pridat moznost renounce na kolekci - tzn. s ni uz nejde nic delat
-      - (manualni mint (pozor - breeding mint musi fungovat)
       - ani pridavat / menit hodnoty properties atd.)
+      - (manualni mint (pozor - breeding mint musi fungovat)
 - NFT - pridat moznost properties, ktere nejsou basic - budou dalsi ID
 - NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.)
       - da se nandavat a sundavat z NFT
       - do Marketplace jde spolecne s tim?
-      - asi udelat nejake pole specialities
+      - asi udelat nejake pole accessories / mapping
       - vymyslet, jak udelat attach a detach
 - NFT - ERC721MintMore - zmensit a udelat z nej library nebo abstract contract nebo neco takoveho - pokus je v /root/ZALOHA
 - NFT - rozdelit do libraries / abstract contract a zrusit v hardhat.config.js optimizer
 - Vytvorit multiDev contract (vlastni projekt) - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri
+
+TODO in English:
+----------------
+- Sale - half of earned DAI should go to liquidity of Token Product (DAI + mint adequate number of tokens - will not mint directly, because the owner of Product Token is NFT contract)
+- NFT - mintToMarketplace and mintMoreToMarketplace - throws an error - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
+- NFT - getNFTProperty returns Property ID error (even it is right one)
+- NFT - add an option to renounce a collection - cannot do anything with it anymore
+      - not even add / change properties values)
+      - (manual mint (caution: breeding mint still must work))
+- NFT - add an option of properties, that are not basic - will be next IDs
+- NFT - add an option of paid accessories (hats, suits, shoes etc.)
+      - can be attached and detached from NFT
+      - will go to Marketplace together with it?
+      - probably make so accesories array / mapping
+      - think out, how to do attach a detach
+- NFT - ERC721MintMore - make it smaller and as a library or abstract contract or something like that - tried it in /root/ZALOHA
+- NFT - split to libraries / abstract contracts a then disable optimizer in hardhat.config.js
 
 Console test:
 -------------
