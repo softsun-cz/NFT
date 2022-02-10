@@ -3,12 +3,13 @@
 pragma solidity ^0.8.0;
 
 import './libs/INFT.sol';
+import '@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import "@openzeppelin/contracts/access/Ownable.sol";
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
-contract Marketplace is Ownable, ReentrancyGuard {
+contract Marketplace is Ownable, ReentrancyGuard, IERC721Receiver {
     using SafeERC20 for IERC20;
     IERC20 currency;
     address devFeeAddress;
@@ -104,5 +105,9 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
     function setDevFeeAddress(address _devFeeAddress) public onlyOwner {
         devFeeAddress = _devFeeAddress;
+    }
+
+    function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) public returns (bytes4) {
+        return IERC721Receiver.onERC721Received.selector;
     }
 }
