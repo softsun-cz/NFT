@@ -1,16 +1,6 @@
 TODO:
 -----
-- Web - pridat stranku, kde je seznam karticek (NFT), co mam v penezence + moznost odeslat na jinou penezenku - zatim bez obrazku - jen cisla nosu, usi apod.
-- Web - pridat stranku podrobnych informaci o jednotlivych NFT (jmeno, obrazek, parametry, rodice)
-- Web - pridat stranku pro Marketplace
-- Web - pridat stranku Token sale + seznam event (co kdo koupil) - pri evente zobrazit aktualni cenu a kolik tokenu se da koupit za tu cenu
-- Web - pridat vyhledavani podle ID + pridat adresu ownera
-- Web - pridat stranku Breeding (Factory)
-- Web - pridat stranku Staking
-- Web - pri nftLevelUpgrade() cizich NFTcek zobrazit upozorneni, ze to neni vlastni NFT, ale povolit
-- Web - pri nftHarvestTokenProduct() cizich NFTcek zobrazit upozorneni, ze to neni vlastni NFT, ale povolit
-- Web - pridat stranku Statistics - zde budou statistiky ke vsem contractum - info o NFT, Token Factory, Token Product, Token Upgrade, Sale, Marketplace, Factory
-- Web - do seznamu karticek pridat sestaveni obrazku, az bude dostupny - https://www.npmjs.com/package/merge-images
+- Web - Dokumentace v https://docs.google.com/document/d/1WqZTzvYa_dGVCoZfY07SutbA61Qkev3V/edit?usp=sharing&ouid=115246878666378037611&rtpof=true&sd=true
 - Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - Marketplace - nastavit, aby pouzival funkci nft.transfer (ktera harvestne tokeny puvodnimu majiteli)
 - NFT - mintToMarketplace a mintMoreToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
