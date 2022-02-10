@@ -1,13 +1,18 @@
 TODO:
 -----
 - Web - Dokumentace v https://docs.google.com/document/d/1WqZTzvYa_dGVCoZfY07SutbA61Qkev3V/edit?usp=sharing&ouid=115246878666378037611&rtpof=true&sd=true
-- Sale - polovina z vybranych USD ma jit na likviditu Token Product (USD + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
-- Marketplace - nastavit, aby pouzival funkci nft.transfer (ktera harvestne tokeny puvodnimu majiteli)
+- Sale - polovina z vybranych USD ma jit na likviditu Token Product (DAI + adekvatni pocet tokenu mintnout - asi nepujde naprimo, protoze majitelem product tokenu je NFT)
 - NFT - mintToMarketplace a mintMoreToMarketplace - hazi chybu - Fail with error 'ERC721: transfer to non ERC721Receiver implementer'
 - NFT - getNFTProperty vraci pri spravne zadanem NFT a Property ID error
-- NFT - pridat moznost renounce na kolekci - tzn. s ni uz nejde nic delat (manualni mint (pozor - breeding mint musi fungovat), ani pridavat / menit hodnoty properties atd.)
-- NFT - pridat moznost properties, ktere nejsou basic
-- NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.) - da se nandavat a sundavat z NFT, do Marketplace jde spolecne s tim, mozna pridavat / odebirat tim level - udelat nejake pole specialities a to propojit asi s jinym contractem, kde vsechny budou, vymyslet, jak udelat attach a detach
+- NFT - pridat moznost renounce na kolekci - tzn. s ni uz nejde nic delat
+      - (manualni mint (pozor - breeding mint musi fungovat)
+      - ani pridavat / menit hodnoty properties atd.)
+- NFT - pridat moznost properties, ktere nejsou basic - budou dalsi ID
+- NFT - pridat moznost placenych doplnku (cepicky, oblecky, boty apod.)
+      - da se nandavat a sundavat z NFT
+      - do Marketplace jde spolecne s tim?
+      - asi udelat nejake pole specialities
+      - vymyslet, jak udelat attach a detach
 - NFT - ERC721MintMore - zmensit a udelat z nej library nebo abstract contract nebo neco takoveho - pokus je v /root/ZALOHA
 - NFT - rozdelit do libraries / abstract contract a zrusit v hardhat.config.js optimizer
 - Vytvorit multiDev contract (vlastni projekt) - tam pujdou vsechna feecka a vice developeru si odtamtud muze harvestnout, co jim patri

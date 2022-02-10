@@ -3,7 +3,21 @@
 pragma solidity ^0.8.0;
 
 interface INFT {
-    function totalSupply() external view returns (uint256);
+    struct Property {
+        string name;
+        uint basicCount;
+        uint createdTime;
+    }
+    function balanceOf(address owner) external view returns (uint balance);
+    function ownerOf(uint tokenId) external view returns (address owner);
+    function safeTransferFrom(address from, address to, uint tokenId) external;
+    function transferFrom(address from, address to, uint tokenId) external;
+    function approve(address to, uint tokenId) external;
+    function getApproved(uint tokenId) external view returns (address operator);
+    function setApprovalForAll(address operator, bool _approved) external;
+    function isApprovedForAll(address owner, address operator) external view returns (bool);
+    function safeTransferFrom(address from, address to, uint tokenId, bytes calldata data) external;
+    function totalSupply() external view returns (uint);
     function transfer(address _fromAddress, address _toAddress, uint _nftID) external;
     function nftRename(uint _nftID, string memory _name) external;
     function nftLevelUpgrade(uint _nftID, uint _levels) external;
@@ -14,7 +28,6 @@ interface INFT {
     function mintMore(address _recipient, uint _collectionID, string memory _name, uint _count) external returns (uint);
     function mintToMarketplace(uint _collectionID, string memory _name, uint _price) external;
     function mintMoreToMarketplace(uint _collectionID, string memory _name, uint _price, uint _count) external;
-    function mintAddDetails(uint _collectionID, string memory _name, bool _hasParents, uint _parentMaleID, uint _parentFemaleID) private;
     function factory(uint _nftMaleID, uint _nftFemaleID, string memory _name) external;
     function getNFTProperty(uint _nftID, uint _propertyID) view external returns (uint);
     function getCollectionProperty(uint _collectionID, uint _propertyID) view external returns (Property memory);
@@ -31,6 +44,9 @@ interface INFT {
     function collectionPropertySetBasicCount(uint _collectionID, uint _propertyID, uint _basicCount) external;
     function collectionPropertyRemove(uint _collectionID, uint _propertyID) external;
     function setDevFeeAddress(address _devFeeAddress) external;
+    event Transfer(address indexed from, address indexed to, uint indexed tokenId);
+    event Approval(address indexed owner, address indexed approved, uint indexed tokenId);
+    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
     event eventTransfer(address indexed _fromAddress, address indexed _toAddress, uint indexed _nftID);
     event eventNFTRename(uint indexed _nftID, string indexed _nameOld, string indexed _nameNew);
     event eventNFTSetNFTProperty(uint indexed _nftID, uint indexed _valueOld, uint indexed _value);
