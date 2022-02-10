@@ -89,12 +89,12 @@ contract NFT is ERC721MintMore, Ownable {
         tokenUpgrade = IERC20Mint(_tokenUpgradeAddress);
     }
 
-    function transfer(address _toAddress, uint _nftID) public {
+    function transfer(address _fromAddress, address _toAddress, uint _nftID) public {
         require(ownerOf(_nftID) == msg.sender, 'transfer: You are not the owner of this NFT');
         nftHarvestTokenProduct(_nftID);
-        safeTransferFrom(msg.sender, address(this), _nftID);
+        safeTransferFrom(_fromAddress, address(this), _nftID);
         safeTransferFrom(address(this), _toAddress, _nftID);
-        emit eventTransfer(msg.sender, _toAddress, _nftID);
+        emit eventTransfer(_fromAddress, _toAddress, _nftID);
     }
 
     function nftRename(uint _nftID, string memory _name) public {
