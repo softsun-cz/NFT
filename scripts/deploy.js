@@ -276,14 +276,16 @@ async function runFunction() {
  var params = [];
  if (arguments.length > 2) for (var i = 2; i < arguments.length; i++) params.push(arguments[i]);
  var res = await arguments[0][arguments[1]](...params);
- console.log('Waiting for 1 confirmation...');
- await res.wait(1);
- console.log('Done.');
- var receipt = await ethers.provider.getTransactionReceipt(res.hash);
- var cost = res.gasPrice.mul(receipt.gasUsed);
- console.log('Transaction cost: ' + ethers.utils.formatEther(cost.toString()) + ' ' + netInfo['symbol']);
- totalCost = totalCost.add(cost);
- console.log();
+ if (typeof res === 'object') {
+  console.log('Waiting for 1 confirmation...');
+  await res.wait(1);
+  console.log('Done.');
+  var receipt = await ethers.provider.getTransactionReceipt(res.hash);
+  var cost = res.gasPrice.mul(receipt.gasUsed);
+  console.log('Transaction cost: ' + ethers.utils.formatEther(cost.toString()) + ' ' + netInfo['symbol']);
+  totalCost = totalCost.add(cost);
+  console.log();
+ } else return res;
 }
 
 async function collectionAdd(contract, name, factoryTime, tokenProductEmission, tokenUpgradePriceLevel, tokenUpgradePriceSetProperty, tokenFactoryPrice) {
