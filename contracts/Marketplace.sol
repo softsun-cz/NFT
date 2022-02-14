@@ -107,7 +107,7 @@ contract Marketplace is Ownable, ReentrancyGuard, IERC721Receiver {
         devFeeAddress = _devFeeAddress;
     }
 
-    function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) public returns (bytes4) {
+    function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) public pure returns (bytes4) {
         return IERC721Receiver.onERC721Received.selector;
     }
 }
