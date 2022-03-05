@@ -1,0 +1,20 @@
+{
+  "name": "NFT",
+  "version": "1.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "node-fetch": "^2"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "*",
+    "@nomiclabs/hardhat-etherscan": "*",
+    "@nomiclabs/hardhat-waffle": "*",
+    "@openzeppelin/contracts": "*",
+    "@types/mocha": "^9.1.0",
+    "chai": "*",
+    "ethereum-waffle": "*",
+    "ethers": "*",
+    "hardhat": "*"
+  }
+}
