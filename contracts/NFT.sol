@@ -2,8 +2,6 @@
 
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
-
 import "./libs/ERC721MintMore.sol";
 import "./libs/IERC20Mint.sol";
 import "./libs/SafeERC20Mint.sol";
