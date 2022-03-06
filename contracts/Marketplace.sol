@@ -63,42 +63,20 @@ contract Marketplace is Ownable, ReentrancyGuard, IERC721Receiver {
     devFeePercent = _devFeePercent;
   }
 
-  function deposit(
-    address _addressContract,
-    uint256 _nftID,
-    uint256 _price
-  ) public nonReentrant {
+  function deposit(address _addressContract, uint256 _nftID, uint256 _price) public nonReentrant {
     INFT nft = INFT(_addressContract);
-    require(
-      acceptedContracts[_addressContract],
-      "deposit: this NFT is not accepted by this Marketplace"
-    );
-    require(
-      nft.ownerOf(_nftID) == msg.sender,
-      "deposit: You are not the owner of this NFT"
-    );
+    require(acceptedContracts[_addressContract], "deposit: this NFT is not accepted by this Marketplace");
+    require(nft.ownerOf(_nftID) == msg.sender, "deposit: You are not the owner of this NFT");
     nft.transfer(msg.sender, address(this), _nftID);
-    deposited[totalDeposits] = Details(
-      true,
-      address(nft),
-      _nftID,
-      msg.sender,
-      _price
-    );
+    deposited[totalDeposits] = Details(true, address(nft), _nftID, msg.sender, _price);
     totalDeposits++;
     totalDeposited++;
-    emit eventDeposit(
-      totalDeposits,
-      Deposit(_addressContract, _nftID, msg.sender, _price, block.timestamp)
-    );
+    emit eventDeposit(totalDeposits, Deposit(_addressContract, _nftID, msg.sender, _price, block.timestamp));
   }
 
   function withdraw(uint256 _id) public nonReentrant {
     require(deposited[_id].exists, "withdraw: Item ID not found");
-    require(
-      deposited[_id].owner == msg.sender,
-      "withdraw: You are not the owner of this NFT"
-    );
+    require(deposited[_id].owner == msg.sender, "withdraw: You are not the owner of this NFT");
     INFT nft = INFT(deposited[_id].addressContract);
     nft.transfer(address(this), msg.sender, deposited[_id].nftID);
     delete deposited[_id];
@@ -106,48 +84,23 @@ contract Marketplace is Ownable, ReentrancyGuard, IERC721Receiver {
     totalDeposited--;
     emit eventWithdraw(
       totalWithdraws,
-      Withdraw(
-        deposited[_id].addressContract,
-        deposited[_id].nftID,
-        deposited[_id].owner,
-        deposited[_id].price,
-        block.timestamp
-      )
+      Withdraw(deposited[_id].addressContract, deposited[_id].nftID, deposited[_id].owner, deposited[_id].price, block.timestamp)
     );
   }
 
   function buy(uint256 _id) public nonReentrant {
     INFT nft = INFT(deposited[_id].addressContract);
-    require(
-      nft.getApproved(deposited[_id].nftID) != address(0),
-      "buy: This NFT is not approved"
-    );
-    require(
-      currency.allowance(msg.sender, address(this)) >= deposited[_id].price,
-      "buy: Currency allowance is too low"
-    );
+    require(nft.getApproved(deposited[_id].nftID) != address(0), "buy: This NFT is not approved");
+    require(currency.allowance(msg.sender, address(this)) >= deposited[_id].price, "buy: Currency allowance is too low");
     currency.safeTransferFrom(msg.sender, address(this), deposited[_id].price);
-    currency.safeTransfer(
-      deposited[_id].owner,
-      (deposited[_id].price * (10000 - devFeePercent)) / 10000
-    );
-    currency.safeTransfer(
-      devFeeAddress,
-      (deposited[_id].price * devFeePercent) / 10000
-    );
+    currency.safeTransfer(deposited[_id].owner, (deposited[_id].price * (10000 - devFeePercent)) / 10000);
+    currency.safeTransfer(devFeeAddress, (deposited[_id].price * devFeePercent) / 10000);
     nft.transfer(address(this), msg.sender, deposited[_id].nftID);
     totalBuys++;
     totalDeposited--;
     emit eventBuy(
       totalBuys,
-      Buy(
-        deposited[_id].addressContract,
-        deposited[_id].nftID,
-        deposited[_id].owner,
-        msg.sender,
-        deposited[_id].price,
-        block.timestamp
-      )
+      Buy(deposited[_id].addressContract, deposited[_id].nftID, deposited[_id].owner, msg.sender, deposited[_id].price, block.timestamp)
     );
     delete deposited[_id];
   }
@@ -160,12 +113,7 @@ contract Marketplace is Ownable, ReentrancyGuard, IERC721Receiver {
     devFeeAddress = _devFeeAddress;
   }
 
-  function onERC721Received(
-    address operator,
-    address from,
-    uint256 tokenId,
-    bytes calldata data
-  ) public pure override returns (bytes4) {
+  function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) public pure override returns (bytes4) {
     return IERC721Receiver.onERC721Received.selector;
   }
 }
