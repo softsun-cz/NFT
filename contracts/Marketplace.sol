@@ -2,12 +2,12 @@
 
 pragma solidity ^0.8.0;
 
-import "./libs/INFT.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import './libs/INFT.sol';
+import '@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol';
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 contract Marketplace is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -65,8 +65,8 @@ contract Marketplace is Ownable, ReentrancyGuard {
     
     function deposit(address _addressContract, uint _nftID, uint _price) public nonReentrant {
         INFT nft = INFT(_addressContract);
-        require(acceptedContracts[_addressContract], "deposit: this NFT is not accepted by this Marketplace");
-        require(nft.ownerOf(_nftID) == msg.sender, "deposit: You are not the owner of this NFT");
+        require(acceptedContracts[_addressContract], 'deposit: this NFT is not accepted by this Marketplace');
+        require(nft.ownerOf(_nftID) == msg.sender, 'deposit: You are not the owner of this NFT');
         nft.transfer(msg.sender, address(this), _nftID);
         deposited[totalDeposits] = Details(true, address(nft), _nftID, msg.sender, _price);
         totalDeposits++;
@@ -75,8 +75,8 @@ contract Marketplace is Ownable, ReentrancyGuard {
     }
 
     function withdraw(uint _id) public nonReentrant {
-        require(deposited[_id].exists, "withdraw: Item ID not found");
-        require(deposited[_id].owner == msg.sender, "withdraw: You are not the owner of this NFT");
+        require(deposited[_id].exists, 'withdraw: Item ID not found');
+        require(deposited[_id].owner == msg.sender, 'withdraw: You are not the owner of this NFT');
         INFT nft = INFT(deposited[_id].addressContract);
         nft.transfer(address(this), msg.sender, deposited[_id].nftID);
         delete deposited[_id];
@@ -87,8 +87,8 @@ contract Marketplace is Ownable, ReentrancyGuard {
 
     function buy(uint _id) public nonReentrant {
         INFT nft = INFT(deposited[_id].addressContract);
-        require(nft.getApproved(deposited[_id].nftID) != address(0), "buy: This NFT is not approved");
-        require(currency.allowance(msg.sender, address(this)) >= deposited[_id].price, "buy: Currency allowance is too low");
+        require(nft.getApproved(deposited[_id].nftID) != address(0), 'buy: This NFT is not approved');
+        require(currency.allowance(msg.sender, address(this)) >= deposited[_id].price, 'buy: Currency allowance is too low');
         currency.safeTransferFrom(msg.sender, address(this), deposited[_id].price);
         currency.safeTransfer(deposited[_id].owner, deposited[_id].price * (10000 - devFeePercent) / 10000);
         currency.safeTransfer(devFeeAddress, deposited[_id].price * devFeePercent / 10000);
