@@ -1,6 +1,7 @@
 #!/bin/bash
 
 LOG=deploy.log
+#WEB=/data/www/test.animals.town/
 DEPLOY_SCRIPT=scripts/deploy.js
 NETWORKS=`node deploy-networks.js`
 echo ''
@@ -32,8 +33,10 @@ npx hardhat run --network $NETWORK $DEPLOY_SCRIPT 2>&1 | tee $LOG
 ./verify.sh $NETWORK
 rm -f ./verify.sh
 
-# sw=false
-# for i in "${!ARRAY[@]}"
+#CONTRACTS=`node deploy-contracts.js`
+#ARRAY=($CONTRACTS)
+#sw=false
+#for i in "${!ARRAY[@]}"
 # do
 #  if [ $sw = false ]; then
 #   NAME=${ARRAY[$i]}
@@ -49,10 +52,10 @@ rm -f ./verify.sh
 #  fi
 # done
 
-# echo 'Run web build script? (Y/N, default: N):'
-# read BUILD
-# if [ "$BUILD" = 'Y' ] || [ "$BUILD" = 'y'  ]; then
-#  cd web
-#  ./build.sh
-#  cd ..
-# fi
+#echo 'Run web build script? (Y/N, default: N):'
+#read BUILD
+#if [ "$BUILD" = 'Y' ] || [ "$BUILD" = 'y'  ]; then
+# cd web
+# ./build.sh "$WEB"
+# cd ..
+#fi
