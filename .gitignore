@@ -19,3 +19,10 @@ yarn-error.log
 yarn.lock
 package-lock.json
 verify.sh
+.eslintignore
+.eslintrc.js
+.npmignore
+.prettierignore
+.solhint.json
+.solhintignore
+tsconfig.json
