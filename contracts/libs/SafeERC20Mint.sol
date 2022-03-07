@@ -2,8 +2,8 @@
 
 pragma solidity ^0.8.0;
 
-import "./IERC20Mint.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
+import './IERC20Mint.sol';
+import '@openzeppelin/contracts/utils/Address.sol';
 
 library SafeERC20Mint {
     using Address for address;
@@ -17,7 +17,7 @@ library SafeERC20Mint {
     }
 
     function safeApprove(IERC20Mint token, address spender, uint256 value) internal {
-        require((value == 0) || (token.allowance(address(this), spender) == 0), "SafeERC20: approve from non-zero to non-zero allowance");
+        require((value == 0) || (token.allowance(address(this), spender) == 0), 'SafeERC20: approve from non-zero to non-zero allowance');
         _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, value));
     }
 
@@ -29,17 +29,17 @@ library SafeERC20Mint {
     function safeDecreaseAllowance(IERC20Mint token, address spender, uint256 value) internal {
         unchecked {
             uint256 oldAllowance = token.allowance(address(this), spender);
-            require(oldAllowance >= value, "SafeERC20: decreased allowance below zero");
+            require(oldAllowance >= value, 'SafeERC20: decreased allowance below zero');
             uint256 newAllowance = oldAllowance - value;
             _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
         }
     }
 
     function _callOptionalReturn(IERC20Mint token, bytes memory data) private {
-        bytes memory returndata = address(token).functionCall(data, "SafeERC20: low-level call failed");
+        bytes memory returndata = address(token).functionCall(data, 'SafeERC20: low-level call failed');
         if (returndata.length > 0) {
             // Return data is optional
-            require(abi.decode(returndata, (bool)), "SafeERC20: ERC20 operation did not succeed");
+            require(abi.decode(returndata, (bool)), 'SafeERC20: ERC20 operation did not succeed');
         }
     }
 }

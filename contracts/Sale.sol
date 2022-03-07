@@ -2,12 +2,12 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "./libs/IERC20Mint.sol";
-import "./libs/SafeERC20Mint.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import './libs/IERC20Mint.sol';
+import './libs/SafeERC20Mint.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 contract Sale is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -34,8 +34,8 @@ contract Sale is Ownable, ReentrancyGuard {
     }
 
     function buyToken(uint _id, uint _amount) public nonReentrant {
-        require(_id <= tokens.length, "buy: Token not found");
-        require(currency.allowance(msg.sender, address(this)) >= _amount, "buy: Currency allowance is too low");
+        require(_id <= tokens.length, 'buy: Token not found');
+        require(currency.allowance(msg.sender, address(this)) >= _amount, 'buy: Currency allowance is too low');
         IERC20Mint token = IERC20Mint(tokens[_id].tokenAddress);
         uint amountOur = 0;
         uint segmentNum =  tokens[_id].buyAmount / tokens[_id].increaseEvery;
