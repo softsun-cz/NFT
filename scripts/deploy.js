@@ -94,10 +94,10 @@ var marketplace = await Marketplace.attach('0xAD531A13b61E6Caf50caCdcEebEbFA8E6F
  await collectionPropertyAdd(nft, piggy, 'Snout', '5');
  await collectionPropertyAdd(nft, piggy, 'Mouth', '5');
  await collectionPropertyAdd(nft, piggy, 'Tail', '5');
- await collectionPropertyAdd(nft, duck, 'Body', '3');
+ await collectionPropertyAdd(nft, duck, 'Body', '5');
  await collectionPropertyAdd(nft, duck, 'Eyes', '5');
  await collectionPropertyAdd(nft, duck, 'Beak', '5');
- await collectionPropertyAdd(nft, duck, 'Wings', '5');
+ await collectionPropertyAdd(nft, duck, 'Wings', '6');
 */
 
  // TEST - mint 10 NFT
