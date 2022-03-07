@@ -25,3 +25,4 @@ verify.sh
 .prettierignore
 .solhint.json
 .solhintignore
+tsconfig.json
