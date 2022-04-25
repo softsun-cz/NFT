@@ -15,6 +15,7 @@ TODO:
       - vymyslet, jak udelat attach a detach
 - NFT - ERC721MintMore - zmensit a udelat z nej library nebo abstract contract nebo neco takoveho - pokus je v /root/ZALOHA
 - NFT - rozdelit do libraries / abstract contract a zrusit v hardhat.config.js optimizer
+- NFT - Breeding predelat tak, aby vzhled byl 1:3 - jednotlive property podle matky, otce nebo nahoda (ted je to jen nahoda)
 - Staking - pouzit contract z Rich Pig - https://github.com/RichPigToken/richpig-contracts/blob/master/contracts/MasterChef.sol
 
 TODO in English:
@@ -33,6 +34,7 @@ TODO in English:
       - think out, how to do attach a detach
 - NFT - ERC721MintMore - make it smaller and as a library or abstract contract or something like that - tried it in /root/ZALOHA
 - NFT - split to libraries / abstract contracts a then disable optimizer in hardhat.config.js
+- NFT - Breeding - remake it like appearance of child will be 1:3 for each property - by mother, father or random (now it's random only)
 - Staking - contract from Rich Pig - https://github.com/RichPigToken/richpig-contracts/blob/master/contracts/MasterChef.sol
 
 Console test:
